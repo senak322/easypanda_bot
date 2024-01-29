@@ -6,8 +6,10 @@ import { backToMainMenu } from "./src/middlewares/backToMainMenu.js";
 
 const bot = new Telegraf(config.tgToken, {});
 
+bot.use(backToMainMenu);
+
 startCommand(bot);
 exchangeCommand(bot);
-bot.use(backToMainMenu);
+
 
 bot.launch();

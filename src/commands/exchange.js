@@ -1,9 +1,8 @@
 import { giveExchangeMenu } from "../keyboards/giveExchangeMenu.js";
-import { backToMainMenu } from "../middlewares/backToMainMenu.js";
 
 export const exchangeCommand = (bot) => {
   bot.hears("💸 Новый обмен", (ctx) => {
-    ctx.reply("Выберите валюту отправки:", giveExchangeMenu);
+    ctx.reply("Выберите валюту отправки", giveExchangeMenu);
   });
 
   // Дополнительные обработчики для выбора валюты
@@ -19,5 +18,5 @@ export const exchangeCommand = (bot) => {
     // Логика для обмена гривен
   });
 
-  bot.hears("🔙 Главное меню", backToMainMenu);
+
 };
