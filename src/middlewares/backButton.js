@@ -3,7 +3,8 @@ import { mainMenu } from "../keyboards/mainMenu.js";
 import { config } from "../../config.js";
 
 export const backButton = (ctx, next) => {
-  if (ctx.updateType === 'message' && ctx.update.message.text === '🔙Назад') {
+    // console.log("Текущее состояние:", ctx.session.state);
+  if (ctx.updateType === 'message' && ctx.message.text === '🔙Назад') {
     switch (ctx.session.state) {
       case "selectingReceiveCurrency":
         // Возвращаемся к выбору валюты отправки

@@ -1,3 +1,10 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "id": "1645639471:1645639471",
+      "data": {
+        "state": "selectingSendCurrency"
+      }
+    }
+  ]
 }
