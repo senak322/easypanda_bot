@@ -4,5 +4,5 @@ export const giveExchangeMenu = Markup.keyboard([
   ["🇷🇺 RUB"],
   ["🇨🇳 CNY"],
   ["🇺🇦 UAH"],
-  ["🔙 Главное меню"],
+  ["📲 Главное меню"],
 ]).resize();

@@ -1,22 +1,32 @@
 import { giveExchangeMenu } from "../keyboards/giveExchangeMenu.js";
+import { receiveExchangeMenu } from "../keyboards/receiveExchangeMenu.js";
 
 export const exchangeCommand = (bot) => {
   bot.hears("💸 Новый обмен", (ctx) => {
     ctx.reply("Выберите валюту отправки", giveExchangeMenu);
   });
 
-  // Дополнительные обработчики для выбора валюты
-  bot.hears("🇷🇺 RUB", (ctx) => {
-    // Логика для обмена рублей
+  bot.hears(["🇷🇺 RUB", "🇨🇳 CNY", "🇺🇦 UAH"], (ctx) => {
+    // Логика для выбора валюты отправки
+    // Сохраняем выбранную валюту отправки в сессии
+    ctx.session.sendCurrency = ctx.message.text;
+    ctx.session.state = 'selectingSendCurrency';
+    // Логика для выбора валюты получения
+    let menu;
+    switch (ctx.session.sendCurrency) {
+      case "🇷🇺 RUB":
+      case "🇺🇦 UAH":
+        menu = receiveExchangeMenu(["Получить 🇨🇳 CNY"]); // Только CNY
+        break;
+      case "send_🇨🇳 CNY":
+        menu = receiveExchangeMenu(["Получить 🇷🇺 RUB"], ["Получить 🇺🇦 UAH"]); // RUB и UAH
+        break;
+    }
+    ctx.reply("Выберите валюту Получения", menu);
   });
 
-  bot.hears("🇨🇳 CNY", (ctx) => {
-    // Логика для обмена юаней
+  bot.hears(["Получить 🇨🇳 CNY", "Получить 🇷🇺 RUB", "Получить 🇺🇦 UAH"], (ctx) => {
+    ctx.session.state = 'selectingReceiveCurrency';
+    // Логика для выбора валюты получения
   });
-
-  bot.hears("🇺🇦 UAH", (ctx) => {
-    // Логика для обмена гривен
-  });
-
-
 };
