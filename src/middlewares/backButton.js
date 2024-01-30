@@ -10,7 +10,7 @@ export const backButton = (ctx, next) => {
         // Возвращаемся к выбору валюты отправки
         ctx.session.state = "selectingSendCurrency";
         ctx.session.sendCurrency = null; // обнуляем предыдущий выбор
-        ctx.reply("Выберите валюту отправки", giveExchangeMenu);
+        ctx.reply("Выберите валюту отправки  👇", giveExchangeMenu);
         break;
       // Добавьте другие case для разных состояний
       default:

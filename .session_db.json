@@ -3,7 +3,8 @@
     {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "selectingSendCurrency"
+        "state": "selectingReceiveCurrency",
+        "sendCurrency": "🇷🇺 RUB"
       }
     }
   ]
