@@ -3,14 +3,26 @@ import { mainMenu } from "../keyboards/mainMenu.js";
 import { config } from "../../config.js";
 
 export const backButton = (ctx, next) => {
-    // console.log("Текущее состояние:", ctx.session.state);
-  if (ctx.updateType === 'message' && ctx.message.text === '🔙Назад') {
+  // console.log("Текущее состояние:", ctx.session.state);
+  if (ctx.updateType === "message" && ctx.message.text === "🔙Назад") {
     switch (ctx.session.state) {
       case "selectingReceiveCurrency":
         // Возвращаемся к выбору валюты отправки
         ctx.session.state = "selectingSendCurrency";
         ctx.session.sendCurrency = null; // обнуляем предыдущий выбор
         ctx.reply("Выберите валюту отправки  👇", giveExchangeMenu);
+        break;
+      case "enteringAmount":
+        // Возвращаемся к выбору валюты отправки
+        ctx.session.state = "selectingReceiveCurrency";
+        ctx.session.receiveCurrency = null; // обнуляем предыдущий выбор
+        ctx.session.limitFrom = null;
+        ctx.session.limitTo = null;
+        ctx.reply(
+          `Вы отдаёте ${ctx.session.sendCurrency}
+Выберите валюту Получения 👇`,
+          ctx.session.menuReceiveCurrency
+        );
         break;
       // Добавьте другие case для разных состояний
       default:
