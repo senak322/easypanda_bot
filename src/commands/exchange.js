@@ -99,6 +99,9 @@ export const exchangeCommand = (bot) => {
   bot.on("text", async (ctx) => {
     let limitToRecieve;
     let limitFromRecieve;
+    console.log(
+      ctx.message.text === `Указать сумму в ${ctx.session.sendCurrency}`
+    );
     // let comission = 0;
     if (ctx.session.state === "enteringAmount") {
       const rate = await getExchangeRate(ctx);
@@ -166,18 +169,35 @@ export const exchangeCommand = (bot) => {
           }`
         );
       }
-    } else if (
-      ctx.message.text === `Указать сумму в ${ctx.session.sendCurrency}`
-    ) {
-      ctx.session.state = "enteringAmount";
-      ctx.reply(
-        `Введите сумму, которую хотите отправить от ${ctx.session.limitFrom} до ${ctx.session.limitTo} в ${ctx.session.sendCurrency}`,
-        Markup.keyboard([
-          [`Указать сумму в ${ctx.session.currencyName}`],
-          [mainMenuBtn, backBtn],
-        ]).resize()
-      );
+    } else if (ctx.session.state === "enteringReceiveAmount") {
+      const rate = await getExchangeRate(ctx);
+      if (!isNaN(rate) && !isNaN(parseFloat(ctx.message.text))) {
+        // Получаем сумму, которую пользователь хочет получить
+        const desiredReceiveAmount = parseFloat(ctx.message.text);
+        const comissionRate = howMuchComission(ctx);
+
+        // Рассчитываем сумму к отправке с учетом комиссии
+        const amountToSend = Math.ceil(
+          desiredReceiveAmount / (rate * (1 - comissionRate))
+        );
+
+        ctx.reply(
+          `Для получения ${desiredReceiveAmount} ${ctx.session.currencyName} вам нужно отправить ${amountToSend} ${ctx.session.sendCurrency}`
+        );
+      } else if (
+        ctx.message.text === `Указать сумму в ${ctx.session.sendCurrency}`
+      ) {
+        ctx.session.state = "enteringAmount";
+        ctx.reply(
+          `Введите сумму, которую хотите отправить от ${ctx.session.limitFrom} до ${ctx.session.limitTo} в ${ctx.session.sendCurrency}`,
+          Markup.keyboard([
+            [`Указать сумму в ${ctx.session.currencyName}`],
+            [mainMenuBtn, backBtn],
+          ]).resize()
+        );
+      }
     }
+
     // Обработка других состояний
   });
 
@@ -214,21 +234,20 @@ export const exchangeCommand = (bot) => {
       if (0 < ctx.session.amount && ctx.session.amount < 3500) {
         comission = 0.08;
       } else if (3500 <= ctx.session.amount && ctx.session.amount < 10000) {
-        comission = 0.1;
+        comission = 0.06;
       } else if (10000 <= ctx.session.amount && ctx.session.amount <= 25000) {
-        comission = 0.07;
+        comission = 0.04;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
       if (0 < ctx.session.amount && ctx.session.amount < 2000) {
         comission = 0.17;
       } else if (2000 <= ctx.session.amount && ctx.session.amount < 20000) {
-        comission = 0.1;
+        comission = 0.11;
       } else if (20000 <= ctx.session.amount && ctx.session.amount <= 50000) {
-        comission = 0.07;
+        comission = 0.10;
       }
     }
-    return comission
+    return comission;
   };
-  
 };
