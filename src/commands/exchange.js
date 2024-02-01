@@ -1,6 +1,10 @@
 import { Markup } from "telegraf";
 import { giveExchangeMenu } from "../keyboards/giveExchangeMenu.js";
 import { receiveExchangeMenu } from "../keyboards/receiveExchangeMenu.js";
+import { config } from "../../config.js";
+import { getExchangeRate } from "../utils/api.js";
+
+const { backBtn, mainMenuBtn } = config;
 
 export const exchangeCommand = (bot) => {
   bot.hears("💸 Новый обмен", (ctx) => {
@@ -86,18 +90,19 @@ export const exchangeCommand = (bot) => {
 Если тебе нужно получить конкретную сумму в ${ctx.session.currencyName} жми «Указать сумму в ${ctx.session.currencyName}»`,
         Markup.keyboard([
           [`Указать сумму в ${ctx.session.currencyName}`],
-          ["📲 Главное меню", "🔙Назад"],
+          [mainMenuBtn, backBtn],
         ]).resize()
       );
     }
   );
 
-  bot.on("text", (ctx) => {
+  bot.on("text", async (ctx) => {
     let limitToRecieve;
     let limitFromRecieve;
-
+    // let comission = 0;
     if (ctx.session.state === "enteringAmount") {
-      if (ctx.message.text === "🔙Назад") {
+      const rate = await getExchangeRate(ctx);
+      if (ctx.message.text === backBtn) {
         // Пропускаем обработку, чтобы позволить middleware обработать это
         return;
       }
@@ -123,7 +128,7 @@ export const exchangeCommand = (bot) => {
 Укажите сумму от ${ctx.session.limitFromRecieve} до ${ctx.session.limitToRecieve} в ${ctx.session.currencyName}`,
           Markup.keyboard([
             [`Указать сумму в ${ctx.session.sendCurrency}`],
-            ["📲 Главное меню", "🔙Назад"],
+            [mainMenuBtn, backBtn],
           ]).resize()
         );
         // ...
@@ -136,9 +141,17 @@ export const exchangeCommand = (bot) => {
         )
       ) {
         // Пользователь ввел корректную сумму
-        ctx.session.amount = ctx.message.text;
-        console.log(`amount: ${ctx.session.amount}`);
         // Далее логика обработки обмена
+        ctx.session.amount = ctx.message.text;
+        // let comission = howMuchComission(ctx)
+        const initialReceiveSum = rate * ctx.session.amount;
+        const receiveSum = Math.floor(
+          initialReceiveSum - initialReceiveSum * howMuchComission(ctx)
+        );
+        ctx.reply(
+          `Вы отправляете ${ctx.session.amount} ${ctx.session.sendCurrency}
+К получению ${receiveSum} ${ctx.session.currencyName}`
+        );
       } else {
         // Пользователь ввел некорректные данные
         ctx.reply(
@@ -161,7 +174,7 @@ export const exchangeCommand = (bot) => {
         `Введите сумму, которую хотите отправить от ${ctx.session.limitFrom} до ${ctx.session.limitTo} в ${ctx.session.sendCurrency}`,
         Markup.keyboard([
           [`Указать сумму в ${ctx.session.currencyName}`],
-          ["📲 Главное меню", "🔙Назад"],
+          [mainMenuBtn, backBtn],
         ]).resize()
       );
     }
@@ -171,4 +184,51 @@ export const exchangeCommand = (bot) => {
   function isWithinLimits(amount, min, max) {
     return amount >= min && amount <= max;
   }
+
+  const howMuchComission = (ctx) => {
+    let comission = 0;
+    if (0 >= ctx.session.amount) {
+      ctx.reply(
+        `⚠️ Введите число от ${
+          ctx.session.state === "enteringAmount"
+            ? ctx.session.limitFrom
+            : ctx.session.limitFromRecieve
+        } до ${
+          ctx.session.state === "enteringAmount"
+            ? ctx.session.limitTo
+            : ctx.session.limitToRecieve
+        }`
+      );
+      return;
+    }
+    if (ctx.session.sendCurrency === "🇷🇺 RUB") {
+      if (0 < ctx.session.amount && ctx.session.amount < 5000) {
+        comission = 0.15;
+      } else if (5000 <= ctx.session.amount && ctx.session.amount < 50000) {
+        comission = 0.1;
+      } else if (50000 <= ctx.session.amount && ctx.session.amount <= 300000) {
+        comission = 0.07;
+      }
+    }
+    if (ctx.session.sendCurrency === "🇨🇳 CNY") {
+      if (0 < ctx.session.amount && ctx.session.amount < 3500) {
+        comission = 0.08;
+      } else if (3500 <= ctx.session.amount && ctx.session.amount < 10000) {
+        comission = 0.1;
+      } else if (10000 <= ctx.session.amount && ctx.session.amount <= 25000) {
+        comission = 0.07;
+      }
+    }
+    if (ctx.session.sendCurrency === "🇺🇦 UAH") {
+      if (0 < ctx.session.amount && ctx.session.amount < 2000) {
+        comission = 0.17;
+      } else if (2000 <= ctx.session.amount && ctx.session.amount < 20000) {
+        comission = 0.1;
+      } else if (20000 <= ctx.session.amount && ctx.session.amount <= 50000) {
+        comission = 0.07;
+      }
+    }
+    return comission
+  };
+  
 };
