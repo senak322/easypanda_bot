@@ -19,8 +19,7 @@ const currencyToExchange = (ctx) => {
 export async function getExchangeRate(ctx) {
   let sendCurrencyCode = ctx.session.sendCurrency.slice(-3).toLowerCase(); // Получение кода валюты отправки
   let receiveCurrencyCode = ctx.session.receiveCurrency.slice(-3).toLowerCase(); // Получение кода валюты получения
-  console.log(sendCurrencyCode);
-  console.log(receiveCurrencyCode);
+  
   try {
     const response = await axios.get(currencyToExchange(ctx));
     const rate =

@@ -14,4 +14,7 @@ export const config = {
 EasyPandaMoney.com`,
   backBtn: "🔙Назад",
   mainMenuBtn: "📲 Главное меню",
+  banksRub: ["🟢Сбер", "🟡Райффайзен"],
+  banksCny: ["🔹AliPay", "💬WeChat"],
+  banksUah: ["🏦ПриватБанк", "⬛️МоноБанк"]
 };

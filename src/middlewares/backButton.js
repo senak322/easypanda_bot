@@ -18,6 +18,7 @@ export const backButton = (ctx, next) => {
       ctx.session.receiveCurrency = null; // обнуляем предыдущий выбор
       ctx.session.limitFrom = null;
       ctx.session.limitTo = null;
+      ctx.session.currencyName = null;
       ctx.reply(
         `Вы отдаёте ${ctx.session.sendCurrency}
 Выберите валюту Получения 👇`,
