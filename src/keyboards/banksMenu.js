@@ -6,11 +6,11 @@ const { banksRub, banksCny, banksUah, backBtn, mainMenuBtn } = config;
 export const banksMenu = (ctx) => {
   let correctBanks = [];
   if (ctx.session.sendCurrency === "🇷🇺 RUB") {
-    correctBanks = [...banksRub];
+    correctBanks = [...banksRub]
   } else if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-    correctBanks = [...banksCny];
+    correctBanks = [...banksCny]
   } else if (ctx.session.sendCurrency === "🇺🇦 UAH") {
-    correctBanks = [...banksUah];
+    correctBanks = [...banksUah]
   }
   console.log(correctBanks);
 //   correctBanks.push();

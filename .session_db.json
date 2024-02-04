@@ -1,10 +1,45 @@
 {
   "sessions": [
     {
+      "id": "5261149748:5261149748",
+      "data": {
+        "state": "chooseRecieveDataOwner",
+        "sendCurrency": "🇨🇳 CNY",
+        "menuReceiveCurrency": {
+          "reply_markup": {
+            "keyboard": [
+              [
+                "Получить 🇷🇺 RUB"
+              ],
+              [
+                "Получить 🇺🇦 UAH"
+              ],
+              [
+                "📲 Главное меню",
+                "🔙Назад"
+              ]
+            ],
+            "resize_keyboard": true
+          }
+        },
+        "receiveCurrency": "Получить 🇷🇺 RUB",
+        "currencyName": "🇷🇺 RUB",
+        "limitFrom": 100,
+        "limitTo": 25000,
+        "howToSend": "500",
+        "howToRecieve": 5877,
+        "sendCard": 2000000000000008,
+        "sendBank": "🔹AliPay",
+        "recieveBank": "🟢Sber",
+        "ownerData": "161718297363728110",
+        "ownerName": "✅ Всё верно, создать заявку!"
+      }
+    },
+    {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "chooseSendBank",
-        "sendCurrency": "🇷🇺 RUB",
+        "state": "chooseRecieveData",
+        "sendCurrency": "🇺🇦 UAH",
         "menuReceiveCurrency": {
           "reply_markup": {
             "keyboard": [
@@ -21,9 +56,13 @@
         },
         "receiveCurrency": "Получить 🇨🇳 CNY",
         "currencyName": "🇨🇳 CNY",
-        "limitFrom": 1000,
-        "limitTo": 300000,
-        "amount": "10000"
+        "limitFrom": 500,
+        "limitTo": 50000,
+        "howToSend": "1000",
+        "howToRecieve": 158,
+        "sendCard": 2000000000000006,
+        "sendBank": "🏦ПриватБанк",
+        "recieveBank": "🔷AliPay"
       }
     }
   ]
