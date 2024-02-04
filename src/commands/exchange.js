@@ -5,7 +5,16 @@ import { config } from "../../config.js";
 import { getExchangeRate } from "../utils/api.js";
 import { banksMenu } from "../keyboards/banksMenu.js";
 
-const { backBtn, mainMenuBtn } = config;
+const {
+  backBtn,
+  mainMenuBtn,
+  banksRub,
+  banksCny,
+  banksUah,
+  banksRubRecieve,
+  banksCnyRecieve,
+  banksUahRecieve,
+} = config;
 
 export const exchangeCommand = (bot) => {
   bot.hears("💸 Новый обмен", (ctx) => {
@@ -139,15 +148,17 @@ export const exchangeCommand = (bot) => {
         // Пользователь ввел корректную сумму
         // Далее логика обработки обмена
         ctx.session.amount = ctx.message.text;
-        ctx.session.state = "chooseSendBank"
+        const howToSend = getExchangeFormula(ctx, rate);
+        ctx.session.state = "chooseSendBank";
         ctx.reply(
           `Вы отправляете ${ctx.session.amount} ${ctx.session.sendCurrency}
-К получению ${getExchangeFormula(ctx, rate)} ${ctx.session.currencyName}
+К получению ${howToSend} ${ctx.session.currencyName}
 Выберите с какого банка Вам удобнее отправить ${ctx.session.sendCurrency} 👇`,
           banksMenu(ctx)
         );
       } else {
         // Пользователь ввел некорректные данные
+        console.log(ctx.session.state);
         ctx.reply(
           `⚠️ Введите число от ${
             ctx.session.state === "enteringAmount"
@@ -164,15 +175,10 @@ export const exchangeCommand = (bot) => {
     } else if (ctx.session.state === "enteringReceiveAmount") {
       const rate = await getExchangeRate(ctx);
       if (!isNaN(rate) && !isNaN(parseFloat(ctx.message.text))) {
-        ctx.session.state = "chooseSendBank"
+        const howToSend = getExchangeFormula(ctx, rate);
+        ctx.session.state = "chooseSendBank";
         ctx.reply(
-          `Для получения ${ctx.message.text} ${
-            ctx.session.currencyName
-          } вам нужно отправить ${getExchangeFormula(ctx, rate)} ${
-            ctx.session.sendCurrency
-          }Выберите на какой банк удобнее отправить ${
-            ctx.session.sendCurrency
-          } 👇`,
+          `Для получения ${ctx.message.text} ${ctx.session.currencyName} вам нужно отправить ${howToSend} ${ctx.session.sendCurrency}Выберите на какой банк удобнее отправить ${ctx.session.sendCurrency} 👇`,
           banksMenu(ctx)
         );
       } else if (
@@ -188,7 +194,17 @@ export const exchangeCommand = (bot) => {
         );
       }
     }
-// bot.hears()
+    bot.hears(banksRub, (ctx) => {
+      console.log(ctx.message.text);
+
+      const { recieveBanks, sendCard } = chooseBankToRecieve();
+      ctx.session.sendCard = sendCard;
+      ctx.session.state = "chooseRecieveBank";
+      ctx.reply(
+        `Теперь выбери удобный способ получения средств в ${ctx.session.currencyName}`,
+        Markup.keyboard(recieveBanks, mainMenuBtn)
+      );
+    });
     // Обработка других состояний
   });
 
@@ -272,5 +288,31 @@ export const exchangeCommand = (bot) => {
       receiveSum = Math.floor(ctx.message.text / (rate * (1 - comissionRate)));
       return receiveSum;
     }
+  }
+
+  function chooseBankToRecieve(ctx) {
+    let sendCard = 0;
+    const recieveBanks =
+      ctx.session.currencyName === "🇨🇳 CNY"
+        ? banksCnyRecieve
+        : ctx.session.currencyName === "🇷🇺 RUB"
+        ? banksRubRecieve
+        : ctx.session.currencyName === "🇷🇺 RUB"
+        ? "🇺🇦 UAH"
+        : 0;
+    if (ctx.message.text === "🟢Сбер") {
+      sendCard = 2202206296854099;
+    } else if (ctx.message.text === "🟡Райффайзен") {
+      sendCard = 2000000000000009;
+    } else if (ctx.message.text === "🔹AliPay") {
+      sendCard = 2000000000000008;
+    } else if (ctx.message.text === "💬WeChat") {
+      sendCard = 2000000000000007;
+    } else if (ctx.message.text === "🏦ПриватБанк") {
+      sendCard = 2000000000000006;
+    } else if (ctx.message.text === "⬛️МоноБанк") {
+      sendCard = 2000000000000005;
+    }
+    return sendCard, recieveBanks;
   }
 };
