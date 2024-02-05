@@ -57,8 +57,7 @@ export const exchangeCommand = (bot) => {
       let limitFrom = 0;
       let limitTo = 0;
       let currencyName = "";
-      console.log(ctx.session.sendCurrency);
-      console.log(ctx.session.receiveCurrency);
+
       switch (ctx.session.receiveCurrency) {
         case "Получить 🇷🇺 RUB":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
@@ -164,7 +163,7 @@ example@live.cn (почта 🔷Alipay)
               ctx.session.currencyName === "🇷🇺 RUB" ? "🇷🇺 RUB" : "🇺🇦 UAH"
             } в формате
 
-2202123456781234567 или 5320123456781234`,
+22021234567812345 или 5320123456781234`,
             Markup.keyboard([mainMenuBtn]).resize()
           );
           ctx.session.state = "chooseRecieveData";
@@ -222,7 +221,6 @@ example@live.cn (почта 🔷Alipay)
         // Далее логика обработки обмена
         ctx.session.howToSend = ctx.message.text;
         const howToRecieve = getExchangeFormula(ctx, rate);
-        console.log(howToRecieve);
         ctx.session.howToRecieve = howToRecieve;
         ctx.session.state = "chooseSendBank";
         ctx.reply(
@@ -231,7 +229,6 @@ example@live.cn (почта 🔷Alipay)
 Выберите с какого банка Вам удобнее отправить ${ctx.session.sendCurrency} 👇`,
           banksMenu(ctx)
         );
-        
       } else {
         // Пользователь ввел некорректные данные
 
@@ -273,21 +270,26 @@ example@live.cn (почта 🔷Alipay)
       }
     }
     if (ctx.session.state === "chooseRecieveData") {
-      ctx.session.ownerData = ctx.message.text;
-      ctx
-        .reply(
+      const input = ctx.message.text
+      if (!isNaN(input) || input.includes("@")) {
+        ctx.session.ownerData = input;
+        ctx.reply(
           `✍️ Теперь укажи 👤Имя владельца ${ctx.session.recieveBank}, в формате IVANOV IVAN или на языке страны получения`,
           Markup.keyboard([mainMenuBtn]).resize()
-        )
-        
-      ctx.session.state = "chooseRecieveDataOwner";
+        );
+
+        ctx.session.state = "chooseRecieveOwner";
+      } else {
+        ctx.reply("Укажите корректные данные")
+      }
     }
-    if (ctx.session.state === "chooseRecieveDataOwner") {
+    else if (ctx.session.state === "chooseRecieveOwner") {
+      console.log(ctx.session.state);
+      console.log(isNaN(ctx.message.text));
       if (isNaN(ctx.message.text)) {
         ctx.session.ownerName = ctx.message.text;
-        ctx
-          .reply(
-            `🕵️‍♂️А теперь давай проверим что все делаем правильно!
+        ctx.reply(
+          `🕵️‍♂️А теперь давай проверим что все делаем правильно!
 Детали обмена:
 ➡️Отдаешь ${ctx.session.howToSend} ${ctx.session.sendCurrency} на ${ctx.session.sendBank}  
 ⬅️ Получаешь ${ctx.session.howToRecieve} ${ctx.session.currencyName} на ${ctx.session.recieveBank}  
@@ -296,12 +298,16 @@ example@live.cn (почта 🔷Alipay)
 ${ctx.session.recieveBank}: ${ctx.session.ownerData}  
 👤Имя владельца: ${ctx.session.ownerName}  
             `,
-            Markup.keyboard(["✅ Всё верно, создать заявку!", mainMenuBtn]).resize()
-          )
-          
-        ctx.session.state = "chooseRecieveDataOwner";
+          Markup.keyboard([
+            "✅ Всё верно, создать заявку!",
+            mainMenuBtn,
+          ]).resize()
+        );
+
+        ctx.session.state = "submitExchange";
       }
     }
+
     // Обработка других состояний
   });
 
@@ -311,7 +317,6 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
 
   const howMuchComission = (ctx, rate) => {
     let comission = 0;
-    console.log(ctx.message.text);
     const amount =
       ctx.session.state === "enteringAmount"
         ? ctx.message.text
