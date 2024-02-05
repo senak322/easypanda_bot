@@ -12,8 +12,6 @@ export const banksMenu = (ctx) => {
   } else if (ctx.session.sendCurrency === "🇺🇦 UAH") {
     correctBanks = [...banksUah]
   }
-  console.log(correctBanks);
-//   correctBanks.push();
 
   return Markup.keyboard([correctBanks, [mainMenuBtn, backBtn]]).resize();
 };

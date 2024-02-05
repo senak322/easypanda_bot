@@ -284,8 +284,6 @@ example@live.cn (почта 🔷Alipay)
       }
     }
     else if (ctx.session.state === "chooseRecieveOwner") {
-      console.log(ctx.session.state);
-      console.log(isNaN(ctx.message.text));
       if (isNaN(ctx.message.text)) {
         ctx.session.ownerName = ctx.message.text;
         ctx.reply(
@@ -309,6 +307,23 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
     }
 
     // Обработка других состояний
+  });
+
+  bot.on('photo', async (ctx) => {
+    if (ctx.session.state === "chooseRecieveData" && ctx.session.currencyName === "🇨🇳 CNY") {
+      // Получаем file_id первого фото в массиве
+      const fileId = ctx.message.photo[0].file_id;
+      // Сохраняем file_id в сессии
+      ctx.session.qrCodeFileId = fileId;
+      ctx.session.ownerData = "Данные отправлены в формате фото"
+      
+      // Просим пользователя подтвердить отправку фото или предложить отправить другое
+      ctx.reply(
+        `✍️ Теперь укажи 👤Имя владельца ${ctx.session.recieveBank}, в формате IVANOV IVAN или на языке страны получения`,
+        Markup.keyboard([mainMenuBtn]).resize()
+      );
+      ctx.session.state = "chooseRecieveOwner"; // Переходим к следующему шагу
+    }
   });
 
   function isWithinLimits(amount, min, max) {

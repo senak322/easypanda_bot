@@ -1,44 +1,9 @@
 {
   "sessions": [
     {
-      "id": "5261149748:5261149748",
-      "data": {
-        "state": "chooseRecieveDataOwner",
-        "sendCurrency": "🇨🇳 CNY",
-        "menuReceiveCurrency": {
-          "reply_markup": {
-            "keyboard": [
-              [
-                "Получить 🇷🇺 RUB"
-              ],
-              [
-                "Получить 🇺🇦 UAH"
-              ],
-              [
-                "📲 Главное меню",
-                "🔙Назад"
-              ]
-            ],
-            "resize_keyboard": true
-          }
-        },
-        "receiveCurrency": "Получить 🇷🇺 RUB",
-        "currencyName": "🇷🇺 RUB",
-        "limitFrom": 100,
-        "limitTo": 25000,
-        "howToSend": "500",
-        "howToRecieve": 5877,
-        "sendCard": 2000000000000008,
-        "sendBank": "🔹AliPay",
-        "recieveBank": "🟢Sber",
-        "ownerData": "161718297363728110",
-        "ownerName": "✅ Всё верно, создать заявку!"
-      }
-    },
-    {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "chooseRecieveOwner",
+        "state": "submitExchange",
         "sendCurrency": "🇷🇺 RUB",
         "menuReceiveCurrency": {
           "reply_markup": {
@@ -58,12 +23,46 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 1000,
         "limitTo": 300000,
-        "howToSend": "12313",
-        "howToRecieve": 873,
+        "howToSend": "10000",
+        "howToRecieve": 709,
+        "sendCard": 2000000000000009,
+        "sendBank": "🟡Райффайзен",
+        "recieveBank": "💭WeChat",
+        "qrCodeFileId": "AgACAgIAAxkBAAIKlmXAZIF8j97YcicoRCheqX-V4jihAAJB1jEbRn4BSsbBrt2Pk3stAQADAgADcwADNAQ",
+        "ownerData": "Данные отправлены в формате фото",
+        "ownerName": "lololo"
+      }
+    },
+    {
+      "id": "5261149748:5261149748",
+      "data": {
+        "state": "submitExchange",
+        "sendCurrency": "🇷🇺 RUB",
+        "menuReceiveCurrency": {
+          "reply_markup": {
+            "keyboard": [
+              [
+                "Получить 🇨🇳 CNY"
+              ],
+              [
+                "📲 Главное меню",
+                "🔙Назад"
+              ]
+            ],
+            "resize_keyboard": true
+          }
+        },
+        "receiveCurrency": "Получить 🇨🇳 CNY",
+        "currencyName": "🇨🇳 CNY",
+        "limitFrom": 1000,
+        "limitTo": 300000,
+        "howToSend": "40000",
+        "howToRecieve": 2838,
         "sendCard": 2202206296854099,
         "sendBank": "🟢Сбер",
         "recieveBank": "🔷AliPay",
-        "ownerData": "515151"
+        "ownerData": "72718837",
+        "ownerName": "Пидор Блядский"
       }
     }
   ]
