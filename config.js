@@ -1,5 +1,4 @@
 export const config = {
-  
   currencyRubUrl:
     "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/rub.json",
   currencyCnyUrl:
@@ -20,4 +19,6 @@ EasyPandaMoney.com`,
   banksRubRecieve: ["🟢Sber", "🟡Raiffeisen"],
   banksCnyRecieve: ["🔷AliPay", "💭WeChat"],
   banksUahRecieve: ["◾️MonoBank"],
+  closeOrderBtn: "❌Закрыть заявку",
+  adminChatId: "-4163458199"
 };

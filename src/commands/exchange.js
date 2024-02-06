@@ -1,5 +1,5 @@
 import { Markup } from "telegraf";
-import crypto from 'crypto';
+import crypto from "crypto";
 import { giveExchangeMenu } from "../keyboards/giveExchangeMenu.js";
 import { receiveExchangeMenu } from "../keyboards/receiveExchangeMenu.js";
 import { config } from "../../config.js";
@@ -11,16 +11,17 @@ import { mainMenu } from "../keyboards/mainMenu.js";
 const {
   backBtn,
   mainMenuBtn,
-  banksRub,
-  banksCny,
-  banksUah,
   banksRubRecieve,
   banksCnyRecieve,
   banksUahRecieve,
+  closeOrderBtn,
+  adminChatId
 } = config;
+
 
 export const exchangeCommand = (bot) => {
   bot.hears("💸 Новый обмен", (ctx) => {
+    ctx.session = null
     ctx.session.state = "selectingSendCurrency";
     ctx.reply("Выберите валюту отправки 👇", giveExchangeMenu);
   });
@@ -104,19 +105,14 @@ export const exchangeCommand = (bot) => {
   );
 
   bot.hears(
-    [
-      "🟢Сбер",
-      "🟡Райффайзен",
-      "🔹AliPay",
-      "💬WeChat",
-      "⬛️МоноБанк",
-    ],
+    ["🟢Сбер", "🟡Райффайзен", "🔹AliPay", "💬WeChat", "⬛️МоноБанк"],
     (ctx) => {
       if (ctx.session.state === "chooseSendBank") {
-        const { recieveBanks, sendCard, sendCardOwner } = chooseBankToRecieve(ctx);
+        const { recieveBanks, sendCard, sendCardOwner } =
+          chooseBankToRecieve(ctx);
         ctx.session.sendCard = sendCard;
         ctx.session.sendBank = ctx.message.text;
-        ctx.session.sendCardOwner = sendCardOwner
+        ctx.session.sendCardOwner = sendCardOwner;
         ctx.reply(
           `Теперь выбери удобный способ получения средств в ${ctx.session.currencyName}`,
           Markup.keyboard([recieveBanks, [mainMenuBtn, backBtn]]).resize()
@@ -127,13 +123,7 @@ export const exchangeCommand = (bot) => {
   );
 
   bot.hears(
-    [
-      "🟢Sber",
-      "🟡Raiffeisen",
-      "🔷AliPay",
-      "💭WeChat",
-      "◾️MonoBank",
-    ],
+    ["🟢Sber", "🟡Raiffeisen", "🔷AliPay", "💭WeChat", "◾️MonoBank"],
     (ctx) => {
       if (ctx.session.state === "chooseRecieveBank") {
         if (ctx.session.currencyName === "🇨🇳 CNY") {
@@ -170,7 +160,7 @@ example@live.cn (почта 🔷Alipay)
           );
           ctx.session.state = "chooseRecieveData";
         }
-        
+
         ctx.session.recieveBank = ctx.message.text;
       }
     }
@@ -189,32 +179,46 @@ example@live.cn (почта 🔷Alipay)
       receiveBank: ctx.session.recieveBank,
       ownerName: ctx.session.ownerName,
       ownerData: ctx.session.ownerData,
-      status: 'pending', // Статус заявки
+      qrCodeFileId: ctx.session.qrCodeFileId,
+      status: "pending", // Статус заявки
       createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 30 * 60000) // Устанавливаем время истечения срока заявки
+      expiresAt: new Date(Date.now() + 30 * 60000), // Устанавливаем время истечения срока заявки
     });
 
     // Сохранение заявки в базу данных
     try {
       const savedOrder = await order.save();
-      const hash = crypto.createHash('sha256').update(savedOrder._id.toString()).digest('hex').substring(0, 6).toUpperCase(); // Взято первые 6 символов для краткости
+      ctx.session.orderId = savedOrder._id; // Сохраните идентификатор заявки в сессию
+      const hash = crypto
+        .createHash("sha256")
+        .update(savedOrder._id.toString())
+        .digest("hex")
+        .substring(0, 6)
+        .toUpperCase(); // Взято первые 6 символов для краткости
       // Отправка данных администраторам
-      const adminChatId = "-4163458199";
-      bot.telegram.sendMessage(
-        adminChatId,
-        `Новая заявка #${hash} от пользователя [${ctx.from.first_name}](tg://user?id=${ctx.from.id}).
+      ctx.session.hash = hash
 
-Пользователь отправляет: ${savedOrder.sendAmount} ${savedOrder.sendCurrency} на ${savedOrder.sendBank} на ${ctx.session.sendCard}
-Пользователь получает: ${savedOrder.receiveAmount} ${savedOrder.receiveCurrency} на ${savedOrder.receiveBank}
+      let messageText = `✅Новая заявка #${hash} от пользователя [${ctx.from.first_name}](tg://user?id=${ctx.from.id}).\n\n`;
+      messageText += `Пользователь отправляет: ${savedOrder.sendAmount} ${savedOrder.sendCurrency} на ${savedOrder.sendBank} на ${ctx.session.sendCard},\n`;
+      messageText += `Пользователь получает: ${savedOrder.receiveAmount} ${savedOrder.receiveCurrency} на ${savedOrder.receiveBank}\n`;
+      messageText += `Имя владельца счета получения: ${savedOrder.ownerName}\n`;
+      messageText += `Данные счета получения: ${savedOrder.ownerData}\n`;
+      messageText += `Дата создания заявки: ${savedOrder.createdAt}\n`;
 
-Имя владельца счета получения: ${savedOrder.ownerName}
-Данные счета получения: ${savedOrder.ownerData}
-Дата создания заявки: ${savedOrder.createdAt}`,
-        { parse_mode: 'Markdown' }
-      );
+      if (savedOrder.qrCodeFileId) {
+        await bot.telegram.sendPhoto(adminChatId, savedOrder.qrCodeFileId, {
+          caption: messageText,
+          parse_mode: "Markdown",
+        });
+      } else {
+        await bot.telegram.sendMessage(adminChatId, messageText, {
+          parse_mode: "Markdown",
+        });
+      }
+
       // Установка таймера на 30 минут для отмены заявки
       setTimeout(async () => {
-        const orderToUpdate  = await Order.findById(savedOrder.id);
+        const orderToUpdate = await Order.findById(savedOrder.id);
         if (orderToUpdate.status === "pending") {
           orderToUpdate.status = "cancelled";
           await orderToUpdate.save();
@@ -230,20 +234,55 @@ example@live.cn (почта 🔷Alipay)
         }
       }, 1800000); // 30 минут в миллисекундах
       // Отправка реквизитов для оплаты пользователю
+      if (ctx.session.qrCodePath) {
+        // Отправка QR-кода для оплаты через WeChat
+        await ctx.replyWithPhoto({ source: ctx.session.qrCodePath });
+      }
       ctx.reply(
         `Ваша заявка #${hash} принята⏱. 
 
-Сумма оплаты: ${ctx.session.howToSend} ${ctx.session.sendCurrency} на ${ctx.session.sendBank}
+Сумма оплаты: ${ctx.session.howToSend} ${ctx.session.sendCurrency} на ${
+          ctx.session.sendBank
+        }
 Реквизиты для оплаты: ${ctx.session.sendCard}
 ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner}` : ""}
 Пожалуйста, произведите оплату в течение 30 минут и отправьте скриншот в этот чат 👇. 
 `,
-        Markup.keyboard([["❌Закрыть заявку", "🆘 Поддержка"], [mainMenuBtn]]).resize()
+        Markup.keyboard([
+          ["❌Закрыть заявку", "🆘 Поддержка"],
+          [mainMenuBtn],
+        ]).resize()
       );
     } catch (error) {
       console.error(error);
       ctx.reply("Произошла ошибка при создании заявки.");
     }
+  });
+
+  bot.hears(closeOrderBtn, async (ctx) => {
+    // Тут логика для закрытия заявки
+    let messageText = `❌Заявка #${ctx.session.hash} от пользователя [${ctx.from.first_name}](tg://user?id=${ctx.from.id}) была закрыта\n\n`;
+    if (ctx.session.orderId) {
+      try {
+        const order = await Order.findById(ctx.session.orderId);
+        if (order && order.status === 'pending') {
+          order.status = 'cancelled';
+          await order.save();
+          ctx.reply('Ваша заявка была закрыта.', mainMenu);
+          await bot.telegram.sendMessage(adminChatId, messageText, {
+            parse_mode: "Markdown",
+          });
+        } else {
+          ctx.reply('Не удалось найти активную заявку для закрытия.');
+        }
+      } catch (error) {
+        console.error(error);
+        ctx.reply('Произошла ошибка при попытке закрыть заявку.');
+      }
+    } else {
+      ctx.reply('Нет активной заявки для закрытия.');
+    }
+    ctx.session.orderId = null; // Очистить информацию о заявке в сессии
   });
 
   bot.on("text", async (ctx) => {
@@ -485,7 +524,8 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
 
   function chooseBankToRecieve(ctx) {
     let sendCard = 0;
-    let sendCardOwner = ""
+    let sendCardOwner = "";
+    let qrCodePath = ""; // Путь к файлу QR-кода
     let recieveBanks =
       ctx.session.currencyName === "🇨🇳 CNY"
         ? banksCnyRecieve
@@ -497,21 +537,21 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
 
     if (ctx.message.text === "🟢Сбер") {
       sendCard = 2202206296854099;
-      sendCardOwner = "Александр В."
+      sendCardOwner = "Александр В.";
     } else if (ctx.message.text === "🟡Райффайзен") {
       sendCard = 2000000000000009;
-      sendCardOwner = "Екатерина Б."
+      sendCardOwner = "Екатерина Б.";
     } else if (ctx.message.text === "🔹AliPay") {
       sendCard = 13136022300;
-      sendCardOwner = ""
+      sendCardOwner = "";
     } else if (ctx.message.text === "💬WeChat") {
-      sendCard = 'QR';
-      sendCardOwner = ""
-    } 
-   
-    else if (ctx.message.text === "⬛️МоноБанк") {
+      sendCard = "QR";
+      sendCardOwner = "";
+      qrCodePath = "./src/images/qrwechat.jpg";
+      ctx.session.qrCodePath = qrCodePath; // Сохранение пути к QR-коду в сессии
+    } else if (ctx.message.text === "⬛️МоноБанк") {
       sendCard = 5375411508576258;
-      sendCardOwner = ""
+      sendCardOwner = "";
     }
     return { sendCard, recieveBanks, sendCardOwner };
   }

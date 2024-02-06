@@ -23,14 +23,16 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 1000,
         "limitTo": 300000,
-        "howToSend": "2828",
-        "howToRecieve": 189,
-        "sendCard": 2000000000000009,
-        "sendBank": "🟡Райффайзен",
-        "sendCardOwner": "Екатерина Б.",
+        "howToSend": "3453",
+        "howToRecieve": 231,
+        "sendCard": 2202206296854099,
+        "sendBank": "🟢Сбер",
+        "sendCardOwner": "Александр В.",
         "recieveBank": "🔷AliPay",
-        "ownerData": "466777",
-        "ownerName": "Hjj hhj"
+        "ownerData": "345345",
+        "ownerName": "dfgdfg",
+        "orderId": "65c21654f7ea8d60675be801",
+        "hash": "9B5C16"
       }
     }
   ]
