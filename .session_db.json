@@ -1,9 +1,9 @@
 {
   "sessions": [
     {
-      "id": "1645639471:1645639471",
+      "id": "5261149748:5261149748",
       "data": {
-        "state": "submitExchange",
+        "state": "waitingForAdminApproval",
         "sendCurrency": "🇷🇺 RUB",
         "menuReceiveCurrency": {
           "reply_markup": {
@@ -23,16 +23,55 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 1000,
         "limitTo": 300000,
-        "howToSend": "3453",
-        "howToRecieve": 231,
+        "limitFromRecieve": 100,
+        "limitToRecieve": 25000,
+        "howToSend": 68039,
+        "howToRecieve": "5000",
         "sendCard": 2202206296854099,
         "sendBank": "🟢Сбер",
         "sendCardOwner": "Александр В.",
-        "recieveBank": "🔷AliPay",
-        "ownerData": "345345",
-        "ownerName": "dfgdfg",
-        "orderId": "65c21654f7ea8d60675be801",
-        "hash": "9B5C16"
+        "recieveBank": "💭WeChat",
+        "qrCodeFileId": "AgACAgUAAxkBAAINh2XCSRvcvav9Afo73V3wetDani3BAAJZuzEbEbQRVhUAAVSYosFmhQEAAwIAA3MAAzQE",
+        "ownerData": "Данные отправлены в формате фото",
+        "ownerName": "Сперма Грязь",
+        "orderId": "65c2492e41fc19b8f364a59d",
+        "hash": "76C8AB"
+      }
+    },
+    {
+      "id": "1645639471:1645639471",
+      "data": {
+        "state": "waitingForPaymentProof",
+        "sendCurrency": "🇷🇺 RUB",
+        "menuReceiveCurrency": {
+          "reply_markup": {
+            "keyboard": [
+              [
+                "Получить 🇨🇳 CNY"
+              ],
+              [
+                "📲 Главное меню",
+                "🔙Назад"
+              ]
+            ],
+            "resize_keyboard": true
+          }
+        },
+        "receiveCurrency": "Получить 🇨🇳 CNY",
+        "currencyName": "🇨🇳 CNY",
+        "limitFrom": 1000,
+        "limitTo": 300000,
+        "howToSend": "10000",
+        "howToRecieve": 711,
+        "sendCard": 2202206296854099,
+        "sendBank": "🟢Сбер",
+        "sendCardOwner": "Александр В.",
+        "recieveBank": "💭WeChat",
+        "qrCodeFileId": "AgACAgIAAxkBAAINpWXCTIg2tqheW0PILEL3c1c30hM9AAJU1zEbD8oRSloXqpiLyVkiAQADAgADcwADNAQ",
+        "ownerData": "Данные отправлены в формате фото",
+        "ownerName": "Gandon",
+        "orderId": "65c24c9341fc19b8f364a5b2",
+        "hash": "02BCB2"
       }
     }
   ]

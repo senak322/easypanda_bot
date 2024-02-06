@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema({
   ownerData: String,
   status: {
     type: String,
-    default: "pending",// pending, completed, cancelled
+    default: "pending", // pending, waitingAccept, completed, cancelled
   },
   createdAt: {
     type: Date,
@@ -21,8 +21,9 @@ const orderSchema = new mongoose.Schema({
   expiresAt: {
     type: Date,
     default: () => Date.now() + 30 * 60000,
-  }, 
+  },
   qrCodeFileId: String, // Опционально для QR кодов
+  hash: String,
 });
 
 const Order = mongoose.model("Order", orderSchema);

@@ -1,6 +1,7 @@
 import { Telegraf } from "telegraf";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import {startCronJobs} from './src/controllers/scheduler.js';
 import { startCommand } from "./src/commands/start.js";
 import { exchangeCommand } from "./src/commands/exchange.js";
 import { backButton } from "./src/middlewares/backButton.js";
@@ -26,5 +27,6 @@ bot.use(backToMainMenu);
 
 startCommand(bot);
 exchangeCommand(bot);
-
+startCronJobs(bot);
 bot.launch();
+
