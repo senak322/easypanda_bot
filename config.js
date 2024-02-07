@@ -20,5 +20,8 @@ EasyPandaMoney.com`,
   banksCnyRecieve: ["🔷AliPay", "💭WeChat"],
   banksUahRecieve: ["◾️MonoBank"],
   closeOrderBtn: "❌Закрыть заявку",
-  adminChatId: "-4163458199"
+  adminChatId: "-4163458199",
+  closedOrder: "❌",
+  waitingOrder: "🔄",
+  completedOrder: "✅"
 };

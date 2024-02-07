@@ -16,6 +16,9 @@ const {
   banksUahRecieve,
   closeOrderBtn,
   adminChatId,
+  closedOrder,
+  waitingOrder,
+  completedOrder,
 } = config;
 
 export const exchangeCommand = (bot) => {
@@ -275,6 +278,42 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
     }
   });
 
+  bot.hears("📚 История заказов", async (ctx) => {
+    try {
+      const orders = await Order.find({ userId: ctx.from.id }).sort({
+        createdAt: -1,
+      });
+      if (orders.length === 0) {
+        return ctx.reply("У вас еще нет заявок.");
+      }
+
+      let messageText = "История ваших заявок:\n";
+      orders.forEach((order, index) => {
+        const statusIcon =
+          order.status === "pending" || order.status === "waitingAccept"
+            ? "🔄"
+            : order.status === "completed"
+            ? "✅"
+            : order.status === "cancelled" || order.status === undefined
+            ? "❌"
+            : "";
+        const formattedDate = formatDate(new Date(order.createdAt));
+  
+        messageText += `${statusIcon} ${formattedDate} #${order.hash}\n`;
+        messageText += `${order.sendAmount.toFixed(2)}${order.sendCurrency}➡️${order.receiveAmount.toFixed(2)}${order.receiveCurrency}\n\n`;
+      });
+
+      ctx.reply(messageText);
+    } catch (error) {
+      console.error(error);
+      ctx.reply("Произошла ошибка при получении истории заказов.");
+    }
+  });
+
+  bot.hears("📚 История заказов", async (ctx) => {
+
+  })
+
   bot.command("approve", async (ctx) => {
     let chatId = "" + ctx.chat.id;
 
@@ -495,6 +534,16 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
       ctx.session.state = "waitingForAdminApproval";
     }
   });
+
+  const formatDate = (date) => {
+    return date.toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   function isWithinLimits(amount, min, max) {
     return amount >= min && amount <= max;
