@@ -237,9 +237,6 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
             [mainMenuBtn],
           ]).resize()
         );
-        // console.log("Setting state to waitingForPaymentProof");
-        // ctx.session.state = "waitingForPaymentProof";
-        // console.log("Current session state:", ctx.session.state);
       } catch (error) {
         console.error(error);
         ctx.reply("Произошла ошибка при создании заявки.", mainMenu);
@@ -251,16 +248,21 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
   bot.hears(closeOrderBtn, async (ctx) => {
     // Тут логика для закрытия заявки
     let messageText = `❌Заявка #${ctx.session.hash} от пользователя [${ctx.from.first_name}](tg://user?id=${ctx.from.id}) была закрыта\n\n`;
+
     if (ctx.session.orderId) {
       try {
         const order = await Order.findById(ctx.session.orderId);
-        if (order && order.status === "pending") {
+        if (
+          order &&
+          (order.status === "pending" || order.status === "waitingAccept")
+        ) {
           order.status = "cancelled";
           await order.save();
           ctx.reply("Ваша заявка была закрыта.", mainMenu);
           await bot.telegram.sendMessage(adminChatId, messageText, {
             parse_mode: "Markdown",
           });
+          ctx.session = {};
         } else {
           ctx.reply("Не удалось найти активную заявку для закрытия.");
         }
@@ -271,7 +273,46 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
     } else {
       ctx.reply("Нет активной заявки для закрытия.");
     }
-    ctx.session.orderId = null; // Очистить информацию о заявке в сессии
+  });
+
+  bot.command("approve", async (ctx) => {
+    let chatId = "" + ctx.chat.id;
+
+    // Проверяем, отправлена ли команда из группы администраторов
+    if (chatId !== adminChatId) {
+      return ctx.reply("Эта команда доступна только в группе администраторов.");
+    }
+
+    const args = ctx.message.text.split(" ").slice(1);
+    if (args.length === 0) {
+      return ctx.reply(
+        "Пожалуйста, укажите hash заявки. Например: /approve ABC123"
+      );
+    }
+
+    const hash = args[0];
+    try {
+      const order = await Order.findOne({ hash: hash });
+      if (!order) {
+        return ctx.reply(`Заявка с hash ${hash} не найдена.`);
+      }
+
+      // Изменение статуса заявки на "завершено"
+      order.status = "completed";
+      await order.save();
+
+      // Отправка уведомления пользователю
+      bot.telegram.sendMessage(
+        order.userId,
+        `✅Ваша заявка #${hash} успешно завершена. Спасибо, что воспользовались нашим сервисом!`
+      );
+
+      // Отправка подтверждения об успешном изменении статуса в группу администраторов
+      ctx.reply(`✅Заявка #${hash} успешно подтверждена и завершена.`);
+    } catch (error) {
+      console.error("Ошибка при обработке команды /approve:", error);
+      ctx.reply("Произошла ошибка при подтверждении заявки.");
+    }
   });
 
   bot.on("text", async (ctx) => {
@@ -410,8 +451,6 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
   });
 
   bot.on("photo", async (ctx) => {
-    console.log("take photo");
-    console.log(ctx.session.state);
     if (
       ctx.session.state === "chooseRecieveData" &&
       ctx.session.currencyName === "🇨🇳 CNY"

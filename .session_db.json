@@ -41,7 +41,7 @@
     {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "waitingForPaymentProof",
+        "state": "waitingForAdminApproval",
         "sendCurrency": "🇷🇺 RUB",
         "menuReceiveCurrency": {
           "reply_markup": {
@@ -61,17 +61,16 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 1000,
         "limitTo": 300000,
-        "howToSend": "10000",
-        "howToRecieve": 711,
+        "howToSend": "100000",
+        "howToRecieve": 7327,
         "sendCard": 2202206296854099,
         "sendBank": "🟢Сбер",
         "sendCardOwner": "Александр В.",
-        "recieveBank": "💭WeChat",
-        "qrCodeFileId": "AgACAgIAAxkBAAINpWXCTIg2tqheW0PILEL3c1c30hM9AAJU1zEbD8oRSloXqpiLyVkiAQADAgADcwADNAQ",
-        "ownerData": "Данные отправлены в формате фото",
-        "ownerName": "Gandon",
-        "orderId": "65c24c9341fc19b8f364a5b2",
-        "hash": "02BCB2"
+        "recieveBank": "🔷AliPay",
+        "ownerData": "546654654",
+        "ownerName": "ijijij",
+        "orderId": "65c2f2be54f82f883e53fa1b",
+        "hash": "C9FBCF"
       }
     }
   ]

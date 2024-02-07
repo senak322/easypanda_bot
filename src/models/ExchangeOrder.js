@@ -23,7 +23,7 @@ const orderSchema = new mongoose.Schema({
     default: () => Date.now() + 30 * 60000,
   },
   qrCodeFileId: String, // Опционально для QR кодов
-  hash: String,
+  hash: { type: String, required: true },
 });
 
 const Order = mongoose.model("Order", orderSchema);
