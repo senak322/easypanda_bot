@@ -1,9 +1,9 @@
 {
   "sessions": [
     {
-      "id": "5261149748:5261149748",
+      "id": "414391528:414391528",
       "data": {
-        "state": "waitingForAdminApproval",
+        "state": "chooseRecieveBank",
         "sendCurrency": "🇷🇺 RUB",
         "menuReceiveCurrency": {
           "reply_markup": {
@@ -25,17 +25,50 @@
         "limitTo": 300000,
         "limitFromRecieve": 100,
         "limitToRecieve": 25000,
-        "howToSend": 68039,
-        "howToRecieve": "5000",
+        "howToSend": 84609936516479,
+        "howToRecieve": "6666666666666",
+        "sendCard": 2000000000000009,
+        "sendBank": "🟡Райффайзен",
+        "sendCardOwner": "Екатерина Б."
+      }
+    },
+    {
+      "id": "5261149748:5261149748",
+      "data": {
+        "state": "selectingSendCurrency"
+      }
+    },
+    {
+      "id": "1645639471:1645639471",
+      "data": {
+        "state": "submitExchange",
+        "sendCurrency": "🇷🇺 RUB",
+        "menuReceiveCurrency": {
+          "reply_markup": {
+            "keyboard": [
+              [
+                "Получить 🇨🇳 CNY"
+              ],
+              [
+                "📲 Главное меню",
+                "🔙Назад"
+              ]
+            ],
+            "resize_keyboard": true
+          }
+        },
+        "receiveCurrency": "Получить 🇨🇳 CNY",
+        "currencyName": "🇨🇳 CNY",
+        "limitFrom": 1000,
+        "limitTo": 300000,
+        "howToSend": "44444",
+        "howToRecieve": 3163,
         "sendCard": 2202206296854099,
         "sendBank": "🟢Сбер",
         "sendCardOwner": "Александр В.",
-        "recieveBank": "💭WeChat",
-        "qrCodeFileId": "AgACAgUAAxkBAAINh2XCSRvcvav9Afo73V3wetDani3BAAJZuzEbEbQRVhUAAVSYosFmhQEAAwIAA3MAAzQE",
-        "ownerData": "Данные отправлены в формате фото",
-        "ownerName": "Сперма Грязь",
-        "orderId": "65c2492e41fc19b8f364a59d",
-        "hash": "76C8AB"
+        "recieveBank": "🔷AliPay",
+        "ownerData": "456456",
+        "ownerName": "fghfgh"
       }
     }
   ]

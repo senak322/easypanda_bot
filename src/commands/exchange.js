@@ -7,6 +7,7 @@ import { getExchangeRate } from "../utils/api.js";
 import { banksMenu } from "../keyboards/banksMenu.js";
 import Order from "../models/ExchangeOrder.js";
 import { mainMenu } from "../keyboards/mainMenu.js";
+import { sendEmail } from "../controllers/emailsender.js";
 
 const {
   backBtn,
@@ -16,7 +17,6 @@ const {
   banksUahRecieve,
   closeOrderBtn,
   adminChatId,
-  closedOrder,
   waitingOrder,
   completedOrder,
 } = config;
@@ -225,6 +225,15 @@ example@live.cn (почта 🔷Alipay)
           // Отправка QR-кода для оплаты через WeChat
           await ctx.replyWithPhoto({ source: ctx.session.qrCodePath });
         }
+
+        const emailMessage = messageText;
+        await sendEmail({
+          to: "ranpokofficial@gmail.com, senak9883@gmail.com, easypanda247@gmail.com", // Замените на реальный адрес электронной почты администратора
+          subject: "Новая заявка на обмен",
+          text: emailMessage,
+          html: `<p>${emailMessage.replace(/\n/g, "<br>")}</p>`, // Преобразование новых строк в теги <br> для HTML
+        });
+
         ctx.reply(
           `Ваша заявка #${hash} принята⏱. 
 
@@ -288,7 +297,7 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
       }
 
       let messageText = "История ваших заявок:\n";
-      orders.forEach((order, index) => {
+      orders.forEach((order) => {
         const statusIcon =
           order.status === "pending" || order.status === "waitingAccept"
             ? "🔄"
@@ -298,9 +307,11 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
             ? "❌"
             : "";
         const formattedDate = formatDate(new Date(order.createdAt));
-  
+
         messageText += `${statusIcon} ${formattedDate} #${order.hash}\n`;
-        messageText += `${order.sendAmount.toFixed(2)}${order.sendCurrency}➡️${order.receiveAmount.toFixed(2)}${order.receiveCurrency}\n\n`;
+        messageText += `${order.sendAmount.toFixed(2)}${
+          order.sendCurrency
+        }➡️${order.receiveAmount.toFixed(2)}${order.receiveCurrency}\n\n`;
       });
 
       ctx.reply(messageText);
@@ -310,9 +321,17 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
     }
   });
 
-  bot.hears("📚 История заказов", async (ctx) => {
-
-  })
+  bot.hears("🆘 Поддержка", (ctx) => {
+    ctx.reply(
+      "Если у вас возникли вопросы, вы можете связаться с поддержкой:",
+      Markup.inlineKeyboard([
+        Markup.button.url(
+          "Написать в поддержку",
+          "https://t.me/easypandamoney"
+        ),
+      ])
+    );
+  });
 
   bot.command("approve", async (ctx) => {
     let chatId = "" + ctx.chat.id;
@@ -346,7 +365,6 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
         `✅Ваша заявка #${hash} успешно завершена. Спасибо, что воспользовались нашим сервисом!`
       );
 
-      // Отправка подтверждения об успешном изменении статуса в группу администраторов
       ctx.reply(`✅Заявка #${hash} успешно подтверждена и завершена.`);
     } catch (error) {
       console.error("Ошибка при обработке команды /approve:", error);
@@ -428,13 +446,23 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
       }
     } else if (ctx.session.state === "enteringReceiveAmount") {
       const rate = await getExchangeRate(ctx);
-      if (!isNaN(rate) && !isNaN(parseFloat(ctx.message.text))) {
+      const enteredAmount = parseFloat(ctx.message.text);
+      if (
+        !isNaN(rate) &&
+        !isNaN(enteredAmount) &&
+        isWithinLimits(
+          enteredAmount,
+          ctx.session.limitFromRecieve,
+          ctx.session.limitToRecieve
+        )
+      ) {
         const howToSend = getExchangeFormula(ctx, rate);
         ctx.session.howToSend = howToSend;
-        ctx.session.howToRecieve = ctx.message.text;
+        ctx.session.howToRecieve = enteredAmount;
         ctx.session.state = "chooseSendBank";
         ctx.reply(
-          `Для получения ${ctx.session.howToRecieve} ${ctx.session.currencyName} вам нужно отправить ${howToSend} ${ctx.session.sendCurrency}Выберите на какой банк удобнее отправить ${ctx.session.sendCurrency} 👇`,
+          `Для получения ${ctx.session.howToRecieve} ${ctx.session.currencyName} вам нужно отправить ${howToSend} ${ctx.session.sendCurrency}
+Выберите на какой банк удобнее отправить ${ctx.session.sendCurrency} 👇`,
           banksMenu(ctx)
         );
       } else if (
@@ -445,6 +473,15 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
           `Введите сумму, которую хотите отправить от ${ctx.session.limitFrom} до ${ctx.session.limitTo} в ${ctx.session.sendCurrency}`,
           Markup.keyboard([
             [`Указать сумму в ${ctx.session.currencyName}`],
+            [mainMenuBtn, backBtn],
+          ]).resize()
+        );
+      } else {
+        // Сообщаем пользователю об ошибке и просим ввести сумму заново
+        ctx.reply(
+          `⚠️ Введенная сумма должна быть числом от ${ctx.session.limitFromRecieve} до ${ctx.session.limitToRecieve} в ${ctx.session.currencyName}. Пожалуйста, попробуйте снова:`,
+          Markup.keyboard([
+            [`Указать сумму в ${ctx.session.sendCurrency}`],
             [mainMenuBtn, backBtn],
           ]).resize()
         );
@@ -527,7 +564,13 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
 
       // Сообщаем пользователю, что чек получен и ожидает подтверждения
       ctx.reply(
-        "Ваш чек получен и отправлен на подтверждение администратором. После подтверждения вы получаете средства на указанные Вами данные для получения"
+        `${completedOrder}Ваш чек получен и отправлен на подтверждение администратору.
+
+После подтверждения вы получаете средства на указанные Вами данные для получения
+
+${waitingOrder}Среднее время обработки платежа 15 минут
+
+Если возникнут вопросы вы можете обратиться в поддежку нажав на соответсвующую кнопку в меню ниже`
       );
 
       // Обновляем состояние сессии
@@ -536,12 +579,12 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
   });
 
   const formatDate = (date) => {
-    return date.toLocaleString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return date.toLocaleString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
