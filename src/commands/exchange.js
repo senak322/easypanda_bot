@@ -226,13 +226,13 @@ example@live.cn (почта 🔷Alipay)
           await ctx.replyWithPhoto({ source: ctx.session.qrCodePath });
         }
 
-        const emailMessage = messageText;
-        await sendEmail({
-          to: "ranpokofficial@gmail.com, senak9883@gmail.com, easypanda247@gmail.com", // Замените на реальный адрес электронной почты администратора
-          subject: "Новая заявка на обмен",
-          text: emailMessage,
-          html: `<p>${emailMessage.replace(/\n/g, "<br>")}</p>`, // Преобразование новых строк в теги <br> для HTML
-        });
+        // const emailMessage = messageText;
+        // await sendEmail({
+        //   to: "ranpokofficial@gmail.com, senak9883@gmail.com, easypanda247@gmail.com", // Замените на реальный адрес электронной почты администратора
+        //   subject: "Новая заявка на обмен",
+        //   text: emailMessage,
+        //   html: `<p>${emailMessage.replace(/\n/g, "<br>")}</p>`, // Преобразование новых строк в теги <br> для HTML
+        // });
 
         ctx.reply(
           `Ваша заявка #${hash} принята⏱. 
