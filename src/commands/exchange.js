@@ -7,7 +7,7 @@ import { getExchangeRate } from "../utils/api.js";
 import { banksMenu } from "../keyboards/banksMenu.js";
 import Order from "../models/ExchangeOrder.js";
 import { mainMenu } from "../keyboards/mainMenu.js";
-import { sendEmail } from "../controllers/emailsender.js";
+// import { sendEmail } from "../controllers/emailsender.js";
 
 const {
   backBtn,
@@ -23,8 +23,17 @@ const {
 
 export const exchangeCommand = (bot) => {
   bot.hears("💸 Новый обмен", (ctx) => {
+    const { isOpen, hoursUntilOpen } = isWorkingTime();
+
     ctx.session = {};
     ctx.session.state = "selectingSendCurrency";
+    if (!isOpen) {
+      ctx.reply(
+        `К сожалению, сейчас нерабочее время. Вы можете оставить заявку сейчас и получить средства через ${hoursUntilOpen} ${
+          hoursUntilOpen === 1 ? "час" : "часов"
+        }. Рабочее время бота: 9-23ч по Пекинскому времени.`
+      );
+    }
     ctx.reply("Выберите валюту отправки 👇", giveExchangeMenu);
   });
 
@@ -249,6 +258,8 @@ ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner
             [mainMenuBtn],
           ]).resize()
         );
+        ctx.reply(`${ctx.session.howToSend}`);
+        ctx.reply(`${ctx.session.sendCard}`);
       } catch (error) {
         console.error(error);
         ctx.reply("Произошла ошибка при создании заявки.", mainMenu);
@@ -568,7 +579,7 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
 
 После подтверждения вы получаете средства на указанные Вами данные для получения
 
-${waitingOrder}Среднее время обработки платежа 15 минут
+${waitingOrder}Среднее время обработки платежа 30 минут
 
 Если возникнут вопросы вы можете обратиться в поддежку нажав на соответсвующую кнопку в меню ниже`
       );
@@ -704,3 +715,27 @@ ${waitingOrder}Среднее время обработки платежа 15 м
     return { sendCard, recieveBanks, sendCardOwner };
   }
 };
+
+function isWorkingTime() {
+  const pekingTime = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" })
+  );
+  const hours = pekingTime.getHours();
+  const workingStartHour = 9;
+  const workingEndHour = 23;
+
+  const isOpen = hours >= workingStartHour && hours < workingEndHour;
+  let hoursUntilOpen = 0;
+
+  if (!isOpen) {
+    if (hours < workingStartHour) {
+      // До начала работы
+      hoursUntilOpen = workingStartHour - hours;
+    } else {
+      // После окончания работы
+      hoursUntilOpen = 24 - hours + workingStartHour;
+    }
+  }
+
+  return { isOpen, hoursUntilOpen };
+}
