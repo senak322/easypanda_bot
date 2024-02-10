@@ -1,68 +1,6 @@
 {
   "sessions": [
     {
-      "id": "414391528:414391528",
-      "data": {
-        "state": "chooseRecieveBank",
-        "sendCurrency": "🇷🇺 RUB",
-        "menuReceiveCurrency": {
-          "reply_markup": {
-            "keyboard": [
-              [
-                "Получить 🇨🇳 CNY"
-              ],
-              [
-                "📲 Главное меню",
-                "🔙Назад"
-              ]
-            ],
-            "resize_keyboard": true
-          }
-        },
-        "receiveCurrency": "Получить 🇨🇳 CNY",
-        "currencyName": "🇨🇳 CNY",
-        "limitFrom": 1000,
-        "limitTo": 300000,
-        "limitFromRecieve": 100,
-        "limitToRecieve": 25000,
-        "howToSend": 84609936516479,
-        "howToRecieve": "6666666666666",
-        "sendCard": 2000000000000009,
-        "sendBank": "🟡Райффайзен",
-        "sendCardOwner": "Екатерина Б."
-      }
-    },
-    {
-      "id": "5261149748:5261149748",
-      "data": {
-        "state": "chooseRecieveBank",
-        "sendCurrency": "🇺🇦 UAH",
-        "menuReceiveCurrency": {
-          "reply_markup": {
-            "keyboard": [
-              [
-                "Получить 🇨🇳 CNY"
-              ],
-              [
-                "📲 Главное меню",
-                "🔙Назад"
-              ]
-            ],
-            "resize_keyboard": true
-          }
-        },
-        "receiveCurrency": "Получить 🇨🇳 CNY",
-        "currencyName": "🇨🇳 CNY",
-        "limitFrom": 500,
-        "limitTo": 50000,
-        "howToSend": "10000",
-        "howToRecieve": 1699,
-        "sendCard": 5375411508576258,
-        "sendBank": "⬛️МоноБанк",
-        "sendCardOwner": ""
-      }
-    },
-    {
       "id": "1645639471:1645639471",
       "data": {
         "state": "waitingForPaymentProof",
@@ -85,16 +23,52 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 1000,
         "limitTo": 300000,
-        "howToSend": "23423",
-        "howToRecieve": 1671,
+        "howToSend": "5000",
+        "howToRecieve": 356,
         "sendCard": 2200300517155691,
         "sendBank": "🟡Райффайзен",
         "sendCardOwner": "Екатерина Б.",
         "recieveBank": "🔷AliPay",
-        "ownerData": "456",
-        "ownerName": "вапвап",
-        "orderId": "65c756a2703349a15850bb92",
-        "hash": "C07C3F"
+        "ownerData": "456456",
+        "ownerName": "апрапр",
+        "orderId": "65c768547003d7102fffd55a",
+        "hash": "6174EC"
+      }
+    },
+    {
+      "id": "414391528:414391528",
+      "data": {
+        "state": "waitingForPaymentProof",
+        "sendCurrency": "🇷🇺 RUB",
+        "menuReceiveCurrency": {
+          "reply_markup": {
+            "keyboard": [
+              [
+                "Получить 🇨🇳 CNY"
+              ],
+              [
+                "📲 Главное меню",
+                "🔙Назад"
+              ]
+            ],
+            "resize_keyboard": true
+          }
+        },
+        "receiveCurrency": "Получить 🇨🇳 CNY",
+        "currencyName": "🇨🇳 CNY",
+        "limitFrom": 1000,
+        "limitTo": 300000,
+        "howToSend": "2000",
+        "howToRecieve": 134,
+        "sendCard": 2200300517155691,
+        "sendBank": "🟡Райффайзен",
+        "sendCardOwner": "Екатерина Б.",
+        "recieveBank": "💭WeChat",
+        "qrCodeFileId": "AgACAgIAAxkBAAISfmXHaK5spSoXc_yMw01aj2zPUXG4AAKl1TEbSMNBSqnh3xxyNseGAQADAgADcwADNAQ",
+        "ownerData": "Данные отправлены в формате фото",
+        "ownerName": "Lizzie",
+        "orderId": "65c768b87003d7102fffd55d",
+        "hash": "4AA170"
       }
     }
   ]
