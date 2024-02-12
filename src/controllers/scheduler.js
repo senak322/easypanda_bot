@@ -73,7 +73,7 @@ export const startCronJobs = (bot) => {
   cron.schedule("* * * * *", () => checkExpiredOrders(bot));
 
   // Отправка приветствия и курсов валют три раза в день
-  cron.schedule("0 9 * * *", () => sendGreetingAndRates(bot), {
+  cron.schedule("0 11 * * *", () => sendGreetingAndRates(bot), {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
