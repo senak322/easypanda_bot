@@ -13,15 +13,15 @@ export const config = {
 EasyPandaMoney.com`,
   backBtn: "🔙Назад",
   mainMenuBtn: "📲 Главное меню",
-  banksRub: ["🟢Сбер", "🟡Райффайзен"],
+  banksRub: ["🟡Тинькофф", "🔶Райффайзен"],
   banksCny: ["🔹AliPay", "💬WeChat"],
   banksUah: ["⬛️МоноБанк"],
-  banksRubRecieve: ["🟢Sber", "🟡Raiffeisen"],
+  banksRubRecieve: ["✅Sber", "🟡Tinkoff", "🔶Raiffeisen"],
   banksCnyRecieve: ["🔷AliPay", "💭WeChat"],
   banksUahRecieve: ["◾️MonoBank"],
   closeOrderBtn: "❌Закрыть заявку",
   adminChatId: "-4163458199",
   closedOrder: "❌",
   waitingOrder: "🔄",
-  completedOrder: "✅"
+  completedOrder: "✅",
 };
