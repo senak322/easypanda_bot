@@ -35,15 +35,13 @@ async function getCustomExchangeRates() {
   const cnyCurr = await axios.get(currencyCnyUrl);
 
   return {
-    RUB_CNY: rubCurr.data.rub.cny * 1.07,
-    UAH_CNY: uahCurr.data.uah.cny * 1.1,
-    CNY_RUB: cnyCurr.data.cny.rub * 0.96,
-    CNY_UAH: cnyCurr.data.cny.uah * 0.96,
+    RUB_CNY: (rubCurr.data.rub.cny * 1.07).toFixed(10),
+    UAH_CNY: (uahCurr.data.uah.cny * 1.1).toFixed(10),
+    CNY_RUB: (cnyCurr.data.cny.rub * 0.96).toFixed(10),
+    CNY_UAH: (cnyCurr.data.cny.uah * 0.96).toFixed(10),
     // Добавьте другие пары валют по аналогии
   };
 }
-
-
 
 // Функция для отправки сообщения с приветствием и курсами валют
 async function sendGreetingAndRates(bot) {
@@ -60,7 +58,7 @@ async function sendGreetingAndRates(bot) {
   const rates = await getCustomExchangeRates();
   const ratesMessage = `RUB🇷🇺 -> CNY🇨🇳 ${rates.RUB_CNY}\nUAH🇺🇦 -> CNY🇨🇳 ${rates.UAH_CNY}\nCNY🇨🇳 -> RUB🇷🇺 ${rates.CNY_RUB}\nCNY🇨🇳 -> UAH🇺🇦 ${rates.CNY_UAH}\n`;
 
-  const message = `${greetings[greetingIndex]}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте, либо на сайте!\n...`;
+  const message = `${greetings[greetingIndex]}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте, либо на сайте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🌎 Сайт](https://easypandamoney.com/)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[📒Отзывы](https://t.me/EasyPandaMoney_otzivi/5)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
 
   bot.telegram.sendMessage(config.adminChatId, message, {
     parse_mode: "Markdown",
@@ -73,7 +71,7 @@ export const startCronJobs = (bot) => {
   cron.schedule("* * * * *", () => checkExpiredOrders(bot));
 
   // Отправка приветствия и курсов валют три раза в день
-  cron.schedule("0 11 * * *", () => sendGreetingAndRates(bot), {
+  cron.schedule("0 9 * * *", () => sendGreetingAndRates(bot), {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
