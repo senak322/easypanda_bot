@@ -258,12 +258,11 @@ example@live.cn (почта 🔷Alipay)
         //   html: `<p>${emailMessage.replace(/\n/g, "<br>")}</p>`, // Преобразование новых строк в теги <br> для HTML
         // });
 
-        ctx.reply(
-          `Ваша заявка #${hash} принята⏱. 
+        const orderMessage = `Ваша заявка #${hash} принята⏱. 
 
 Сумма оплаты: ${ctx.session.howToSend} ${ctx.session.sendCurrency} на ${
-            ctx.session.sendBank
-          }
+          ctx.session.sendBank
+        }
 Реквизиты для оплаты: ${ctx.session.sendCard}
 ${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner}` : ""}
 ${
@@ -273,7 +272,10 @@ ${
     : "Ниже будут продублированы сумма к оплате и реквизиты для копирования"
 }
 Пожалуйста, произведите оплату в течение 30 минут и отправьте скриншот в этот чат 👇. 
-`,
+        `;
+
+        await ctx.reply(
+          orderMessage,
           Markup.keyboard([
             ["❌Закрыть заявку", "🆘 Поддержка"],
             [mainMenuBtn],
@@ -283,8 +285,7 @@ ${
           ctx.session.sendBank === "🟡Тинькофф" ||
           ctx.session.sendBank === "🔶Райффайзен"
         ) {
-          
-          await ctx.reply("Нажмите кнопку ниже для сввязи с администратором", {
+          await ctx.reply("Нажмите кнопку ниже для связи с администратором", {
             reply_markup: {
               inline_keyboard: [
                 [
@@ -292,13 +293,13 @@ ${
                     text: "Связаться с администратором",
                     url: "https://t.me/easypandamoney",
                   },
-                ], 
+                ],
               ],
             },
           });
         } else {
-          ctx.reply(ctx.session.howToSend)
-          ctx.reply(`${ctx.session.sendCard}`)
+          await ctx.reply(ctx.session.howToSend);
+          await ctx.reply(`${ctx.session.sendCard}`);
         }
       } catch (error) {
         console.error(error);

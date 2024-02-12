@@ -59,14 +59,13 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 1000,
         "limitTo": 300000,
-        "howToSend": "33333",
-        "howToRecieve": 2362,
+        "howToSend": "20000",
+        "howToRecieve": 1417,
         "sendCard": "Для получения реквизитов отправьте номер заявки в чат с Администратором",
         "sendBank": "🟡Тинькофф",
         "sendCardOwner": "",
-        "recieveBank": "💭WeChat",
-        "qrCodeFileId": "AgACAgIAAxkBAAIWCGXJuAwHIiQFn0zM6So8FzhiprFaAAKQ1jEbYSZRStl14xiC4qbNAQADAgADcwADNAQ",
-        "ownerData": "Данные отправлены в формате фото",
+        "recieveBank": "🔷AliPay",
+        "ownerData": "454545",
         "ownerName": "dfgdfg"
       }
     }
