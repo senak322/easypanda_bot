@@ -75,11 +75,11 @@ export const startCronJobs = (bot) => {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
-  cron.schedule("57 11 * * *", () => sendGreetingAndRates(bot), {
+  cron.schedule("0 12 * * *", () => sendGreetingAndRates(bot), {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
-  cron.schedule("0 21 * * *", () => sendGreetingAndRates(bot), {
+  cron.schedule("0 18 * * *", () => sendGreetingAndRates(bot), {
     scheduled: true,
     timezone: "Europe/Moscow",
   });

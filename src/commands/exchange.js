@@ -264,7 +264,8 @@ example@live.cn (почта 🔷Alipay)
           ctx.session.sendBank
         }
 Реквизиты для оплаты: ${ctx.session.sendCard}
-${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner}` : ""}
+${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner}
+❗️Комментарий не писать❗️` : ""}
 ${
   ctx.session.sendBank === "🟡Тинькофф" ||
   ctx.session.sendBank === "🔶Райффайзен"
