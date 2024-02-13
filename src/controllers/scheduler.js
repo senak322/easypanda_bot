@@ -35,8 +35,8 @@ async function getCustomExchangeRates() {
   const cnyCurr = await axios.get(currencyCnyUrl);
 
   return {
-    RUB_CNY: (rubCurr.data.rub.cny * 1.07).toFixed(10),
-    UAH_CNY: (uahCurr.data.uah.cny * 1.1).toFixed(10),
+    RUB_CNY: (rubCurr.data.rub.cny * 0.93).toFixed(10),
+    UAH_CNY: (uahCurr.data.uah.cny * 0.9).toFixed(10),
     CNY_RUB: (cnyCurr.data.cny.rub * 0.96).toFixed(10),
     CNY_UAH: (cnyCurr.data.cny.uah * 0.96).toFixed(10),
     // Добавьте другие пары валют по аналогии
@@ -75,7 +75,7 @@ export const startCronJobs = (bot) => {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
-  cron.schedule("0 15 * * *", () => sendGreetingAndRates(bot), {
+  cron.schedule("57 11 * * *", () => sendGreetingAndRates(bot), {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
