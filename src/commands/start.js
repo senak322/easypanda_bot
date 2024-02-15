@@ -1,6 +1,7 @@
 import { Markup } from "telegraf";
 import { mainMenu } from "../keyboards/mainMenu.js";
 import { config } from "../../config.js";
+import { User } from "../models/User.js";
 
 export const startCommand = (bot) => {
   bot.start(async (ctx) => {

@@ -7,6 +7,7 @@ import { getExchangeRate } from "../utils/api.js";
 import { banksMenu } from "../keyboards/banksMenu.js";
 import Order from "../models/ExchangeOrder.js";
 import { mainMenu } from "../keyboards/mainMenu.js";
+import { User } from "../models/User.js";
 // import { sendEmail } from "../controllers/emailsender.js";
 
 const {
@@ -194,20 +195,32 @@ example@live.cn (почта 🔷Alipay)
 
   bot.hears("✅ Всё верно, создать заявку!", async (ctx) => {
     if (ctx.session.state === "submitExchange") {
-      const user = await User.findById(ctx.from.id);
-      const now = new Date();
-      const aDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-
-      // Фильтрация неоплаченных заявок за последние 24 часа
-      const recentUnpaidOrders = user.unpaidOrders.filter(
-        (order) => order.createdAt > aDayAgo
-      );
-
-      if (recentUnpaidOrders.length > 3) {
-        // Блокировка пользователя
-        user.isBlocked = true;
+      const user = await User.findOne({ userId: Number(ctx.from.id) });
+      if (!user) {
+        // Если пользователь не найден, создаем нового
+        user = new User({
+          userId: String(ctx.from.id),
+          unpaidOrders: [],
+          isBlocked: false,
+          role: "user",
+          isAdmin: false,
+        });
         await user.save();
-        return ctx.reply("Вы заблокированы за создание неоплаченных заявок.");
+      } else {
+        const now = new Date();
+        const aDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+        console.log(user);
+        // Фильтрация неоплаченных заявок за последние 24 часа
+        const recentUnpaidOrders = user.unpaidOrders.filter(
+          (order) => order.createdAt > aDayAgo
+        );
+
+        if (recentUnpaidOrders.length > 3) {
+          // Блокировка пользователя
+          user.isBlocked = true;
+          await user.save();
+          return ctx.reply("Вы заблокированы за создание неоплаченных заявок.");
+        }
       }
       const hash = crypto
         .createHash("sha256")

@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema({
     userId: Number,
     isBlocked: { type: Boolean, default: false },
@@ -9,4 +11,4 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false },
   });
   
-  const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);
