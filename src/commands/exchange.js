@@ -194,6 +194,21 @@ example@live.cn (почта 🔷Alipay)
 
   bot.hears("✅ Всё верно, создать заявку!", async (ctx) => {
     if (ctx.session.state === "submitExchange") {
+      const user = await User.findById(ctx.from.id);
+      const now = new Date();
+      const aDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+
+      // Фильтрация неоплаченных заявок за последние 24 часа
+      const recentUnpaidOrders = user.unpaidOrders.filter(
+        (order) => order.createdAt > aDayAgo
+      );
+
+      if (recentUnpaidOrders.length > 3) {
+        // Блокировка пользователя
+        user.isBlocked = true;
+        await user.save();
+        return ctx.reply("Вы заблокированы за создание неоплаченных заявок.");
+      }
       const hash = crypto
         .createHash("sha256")
         .update(new Date().toISOString()) // Используйте текущую дату и время для уникальности
@@ -264,8 +279,12 @@ example@live.cn (почта 🔷Alipay)
           ctx.session.sendBank
         }
 Реквизиты для оплаты: ${ctx.session.sendCard}
-${ctx.session.sendCardOwner ? `Получатель: ${ctx.session.sendCardOwner}
-❗️Комментарий не писать❗️` : ""}
+${
+  ctx.session.sendCardOwner
+    ? `Получатель: ${ctx.session.sendCardOwner}
+❗️Комментарий не писать❗️`
+    : ""
+}
 ${
   ctx.session.sendBank === "🟡Тинькофф" ||
   ctx.session.sendBank === "🔶Райффайзен"
@@ -960,10 +979,10 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       sendCardOwner = "";
     } else if (ctx.message.text === "🔹AliPay") {
       sendCard = 13136022300;
-      sendCardOwner = "";
+      sendCardOwner = "C YURII";
     } else if (ctx.message.text === "💬WeChat") {
       sendCard = "QR";
-      sendCardOwner = "";
+      sendCardOwner = "CHERNIAIEV YURII";
       qrCodePath = "./src/images/qrwechat.jpg";
       ctx.session.qrCodePath = qrCodePath; // Сохранение пути к QR-коду в сессии
     } else if (ctx.message.text === "⬛️МоноБанк") {

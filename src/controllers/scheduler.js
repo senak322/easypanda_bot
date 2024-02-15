@@ -2,7 +2,7 @@ import cron from "node-cron";
 import Order from "../models/ExchangeOrder.js"; // Убедитесь, что путь к модели верный
 import { config } from "../../config.js";
 import axios from "axios";
-const { adminChatId, currencyRubUrl, currencyCnyUrl, currencyUahUrl } = config;
+const { adminChatId, groupChatId, currencyRubUrl, currencyCnyUrl, currencyUahUrl } = config;
 
 const checkExpiredOrders = async (bot) => {
   try {
@@ -45,22 +45,21 @@ async function getCustomExchangeRates() {
 
 // Функция для отправки сообщения с приветствием и курсами валют
 async function sendGreetingAndRates(bot) {
-  const greetings = [
-    "Доброе утро! Хорошего начала дня!🎉",
-    "Добрый день! Желаем продуктивной второй половины дня!",
-    "Доброй ночи, желаем крепкого сна!",
-  ];
+  const greetings = 
+    "Доброго времени суток!"
+    
+  
 
   // Получаем текущий час для определения нужного приветствия
   const currentHour = new Date().getHours();
-  const greetingIndex = currentHour < 12 ? 0 : currentHour < 18 ? 1 : 2;
+  // const greetingIndex = currentHour < 12 ? 0 : currentHour < 18 ? 1 : 2;
 
   const rates = await getCustomExchangeRates();
   const ratesMessage = `RUB🇷🇺 -> CNY🇨🇳 ${rates.RUB_CNY}\nUAH🇺🇦 -> CNY🇨🇳 ${rates.UAH_CNY}\nCNY🇨🇳 -> RUB🇷🇺 ${rates.CNY_RUB}\nCNY🇨🇳 -> UAH🇺🇦 ${rates.CNY_UAH}\n`;
 
-  const message = `${greetings[greetingIndex]}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте, либо на сайте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🌎 Сайт](https://easypandamoney.com/)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[📒Отзывы](https://t.me/EasyPandaMoney_otzivi/5)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
+  const message = `${greetings}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте, либо на сайте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🌎 Сайт](https://easypandamoney.com/)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
 
-  bot.telegram.sendMessage(config.adminChatId, message, {
+  bot.telegram.sendMessage(config.groupChatId, message, {
     parse_mode: "Markdown",
     disable_web_page_preview: true,
   });
@@ -75,12 +74,12 @@ export const startCronJobs = (bot) => {
     scheduled: true,
     timezone: "Europe/Moscow",
   });
-  cron.schedule("0 12 * * *", () => sendGreetingAndRates(bot), {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  });
-  cron.schedule("0 18 * * *", () => sendGreetingAndRates(bot), {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  });
+  // cron.schedule("0 12 * * *", () => sendGreetingAndRates(bot), {
+  //   scheduled: true,
+  //   timezone: "Europe/Moscow",
+  // });
+  // cron.schedule("0 18 * * *", () => sendGreetingAndRates(bot), {
+  //   scheduled: true,
+  //   timezone: "Europe/Moscow",
+  // });
 };
