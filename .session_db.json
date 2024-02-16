@@ -39,7 +39,7 @@
     {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "submitExchange",
+        "state": "waitingForPaymentProof",
         "sendCurrency": "🇨🇳 CNY",
         "menuReceiveCurrency": {
           "reply_markup": {
@@ -62,14 +62,16 @@
         "currencyName": "🇷🇺 RUB",
         "limitFrom": 100,
         "limitTo": 25000,
-        "howToSend": "10000",
-        "howToRecieve": 121844,
+        "howToSend": "1000",
+        "howToRecieve": 11676,
         "sendCard": 13136022300,
         "sendBank": "🔹AliPay",
         "sendCardOwner": "C YURII",
         "recieveBank": "✅Sber",
-        "ownerData": "456456456",
-        "ownerName": "ghghjghj"
+        "ownerData": "5151511",
+        "ownerName": "апрапр",
+        "orderId": "65ced14f30e99fa58d6e4df0",
+        "hash": "9430DD"
       }
     }
   ]
