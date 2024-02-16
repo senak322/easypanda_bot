@@ -194,10 +194,8 @@ example@live.cn (почта 🔷Alipay)
   );
 
   bot.hears("✅ Всё верно, создать заявку!", async (ctx) => {
-    console.log("Начало создания заявки");
     if (ctx.session.state === "submitExchange") {
-      console.log("Поиск пользователя", ctx.from.id);
-      const user = await User.findOne({ userId: Number(ctx.from.id) });
+      let user = await User.findOne({ userId: Number(ctx.from.id) });
       if (!user) {
         // Если пользователь не найден, создаем нового
         user = new User({
