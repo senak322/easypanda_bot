@@ -39,16 +39,13 @@
     {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "waitingForPaymentProof",
-        "sendCurrency": "🇨🇳 CNY",
+        "state": "submitExchange",
+        "sendCurrency": "🇷🇺 RUB",
         "menuReceiveCurrency": {
           "reply_markup": {
             "keyboard": [
               [
-                "Получить 🇷🇺 RUB"
-              ],
-              [
-                "Получить 🇺🇦 UAH"
+                "Получить 🇨🇳 CNY"
               ],
               [
                 "📲 Главное меню",
@@ -58,20 +55,18 @@
             "resize_keyboard": true
           }
         },
-        "receiveCurrency": "Получить 🇷🇺 RUB",
-        "currencyName": "🇷🇺 RUB",
-        "limitFrom": 100,
-        "limitTo": 25000,
-        "howToSend": "1000",
-        "howToRecieve": 11676,
-        "sendCard": 13136022300,
-        "sendBank": "🔹AliPay",
-        "sendCardOwner": "C YURII",
-        "recieveBank": "✅Sber",
-        "ownerData": "5151511",
-        "ownerName": "апрапр",
-        "orderId": "65ced14f30e99fa58d6e4df0",
-        "hash": "9430DD"
+        "receiveCurrency": "Получить 🇨🇳 CNY",
+        "currencyName": "🇨🇳 CNY",
+        "limitFrom": 1000,
+        "limitTo": 300000,
+        "howToSend": "10000",
+        "howToRecieve": 698,
+        "sendCard": 2202206296854099,
+        "sendBank": "✅Сбер",
+        "sendCardOwner": "Александр В.",
+        "recieveBank": "🔷AliPay",
+        "ownerData": "515151",
+        "ownerName": "ghghgh"
       }
     }
   ]

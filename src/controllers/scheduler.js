@@ -2,7 +2,15 @@ import cron from "node-cron";
 import Order from "../models/ExchangeOrder.js"; // Убедитесь, что путь к модели верный
 import { config } from "../../config.js";
 import axios from "axios";
-const { adminChatId, groupChatId, currencyRubUrl, currencyCnyUrl, currencyUahUrl } = config;
+import { User } from "../models/User.js";
+
+const {
+  adminChatId,
+  groupChatId,
+  currencyRubUrl,
+  currencyCnyUrl,
+  currencyUahUrl,
+} = config;
 
 const checkExpiredOrders = async (bot) => {
   try {
@@ -13,11 +21,23 @@ const checkExpiredOrders = async (bot) => {
     });
 
     expiredOrders.forEach(async (order) => {
-      order.status = "cancelled";
-      let messageText = `Время на оплату истекло. Заявка #${order.hash} отменена.`;
+      order.status = "cancelledByTimer";
       await order.save();
-      // Здесь должна быть логика отправки сообщения пользователю
-      // Например, bot.telegram.sendMessage(...)
+      // Найти пользователя этой заявки
+      let user = await User.findOne({ userId: order.userId });
+      if (user) {
+        // Добавить неоплаченный ордер в историю пользователя
+        user.unpaidOrders.push({ orderId: order._id, createdAt: new Date() });
+        await user.save();
+      }
+      let messageText = `Время на оплату истекло. Заявка #${order.hash} отменена.
+❕Если ты оплатил заявку после отмены скорее пиши номер заявки в службу поддержки @easypandamoney и прикрепляй чек об оплате 🧾Я не гарантирую, но постараюсь помочь ✊
+
+⚠️ Если в течение суток мне прийдется отменить твою заявку более трех раз, твой аккаунт может быть заблокирован
+
+Пожалуйста, не создавай заявку, если не готов оплатить её в отведенное время 🙏🏻`;
+
+      // Здесь логика отправки сообщения пользователю
       bot.telegram.sendMessage(order.userId, messageText);
       bot.telegram.sendMessage(adminChatId, messageText, {
         parse_mode: "Markdown",
@@ -45,13 +65,10 @@ async function getCustomExchangeRates() {
 
 // Функция для отправки сообщения с приветствием и курсами валют
 async function sendGreetingAndRates(bot) {
-  const greetings = 
-    "Доброго времени суток!"
-    
-  
+  const greetings = "Доброго времени суток!";
 
   // Получаем текущий час для определения нужного приветствия
-  const currentHour = new Date().getHours();
+  // const currentHour = new Date().getHours();
   // const greetingIndex = currentHour < 12 ? 0 : currentHour < 18 ? 1 : 2;
 
   const rates = await getCustomExchangeRates();
@@ -59,7 +76,7 @@ async function sendGreetingAndRates(bot) {
 
   const message = `${greetings}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте, либо на сайте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🌎 Сайт](https://easypandamoney.com/)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
 
-  bot.telegram.sendMessage(config.groupChatId, message, {
+  bot.telegram.sendMessage(adminChatId, message, {
     parse_mode: "Markdown",
     disable_web_page_preview: true,
   });

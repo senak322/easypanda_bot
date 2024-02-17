@@ -199,7 +199,7 @@ example@live.cn (почта 🔷Alipay)
       if (!user) {
         // Если пользователь не найден, создаем нового
         user = new User({
-          userId: String(ctx.from.id),
+          userId: Number(ctx.from.id),
           unpaidOrders: [],
           isBlocked: false,
           role: "user",
@@ -208,7 +208,7 @@ example@live.cn (почта 🔷Alipay)
         await user.save();
       } else {
         const now = new Date();
-        const aDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+        const aDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         console.log(user);
         // Фильтрация неоплаченных заявок за последние 24 часа
         const recentUnpaidOrders = user.unpaidOrders.filter(
@@ -259,7 +259,7 @@ example@live.cn (почта 🔷Alipay)
         messageText += `Пользователь получает: ${savedOrder.receiveAmount} ${savedOrder.receiveCurrency} на ${savedOrder.receiveBank}\n`;
         messageText += `Имя владельца счета получения: ${savedOrder.ownerName}\n`;
         messageText += `Данные счета получения: ${savedOrder.ownerData}\n`;
-        messageText += `Дата создания заявки: ${savedOrder.createdAt}\n`;
+        messageText += `Дата создания заявки: ${formatDate(savedOrder.createdAt)}\n`;
 
         if (savedOrder.qrCodeFileId) {
           await bot.telegram.sendPhoto(adminChatId, savedOrder.qrCodeFileId, {
@@ -304,6 +304,7 @@ ${
     ? ""
     : "Ниже будут продублированы сумма к оплате и реквизиты для копирования"
 }
+❗️Важно❗️: принимается оплата только внутри банка, карту которого ты выбрал.
 Пожалуйста, произведите оплату в течение 30 минут и отправьте скриншот в этот чат 👇. 
         `;
 
@@ -381,25 +382,8 @@ ${
         return ctx.reply("У вас еще нет заявок.");
       }
 
-      let messageText = "История ваших заявок:\n";
-      orders.forEach((order) => {
-        const statusIcon =
-          order.status === "pending" || order.status === "waitingAccept"
-            ? "🔄"
-            : order.status === "completed"
-            ? "✅"
-            : order.status === "cancelled" || order.status === undefined
-            ? "❌"
-            : "";
-        const formattedDate = formatDate(new Date(order.createdAt));
-
-        messageText += `${statusIcon} ${formattedDate} #${order.hash}\n`;
-        messageText += `${order.sendAmount.toFixed(2)}${
-          order.sendCurrency
-        }➡️${order.receiveAmount.toFixed(2)}${order.receiveCurrency}\n\n`;
-      });
-
-      ctx.reply(messageText);
+      await sendGroupedOrders(ctx.chat.id, orders, bot);
+      // ctx.reply(messageText);
     } catch (error) {
       console.error(error);
       ctx.reply("Произошла ошибка при получении истории заказов.");
@@ -666,6 +650,84 @@ ${
     } catch (error) {
       console.error("Ошибка при закрытии заявки:", error);
       ctx.reply("Произошла ошибка при попытке закрыть заявку.");
+    }
+  });
+
+  bot.command("block_user", async (ctx) => {
+    let chatId = "" + ctx.chat.id;
+
+    // Проверяем, отправлена ли команда из группы администраторов
+    if (chatId !== adminChatId) {
+      return ctx.reply("Эта команда доступна только в группе администраторов.");
+    }
+
+    // Извлекаем аргументы команды (id)
+    const args = ctx.message.text.split(" ").slice(1);
+    if (args.length === 0) {
+      return ctx.reply(
+        "Пожалуйста, укажите ID пользователя. Например: /block_user 1234"
+      );
+    }
+
+    const id = args[0];
+    try {
+      // Поиск заявки по хешу
+      const user = await User.findOne({ userId: id });
+      if (!user) {
+        return ctx.reply(`Пользователь с ID ${id} не найден.`);
+      }
+
+      user.isBlocked = true;
+      await user.save();
+
+      ctx.reply(`Пользователь с ID ${id} заблокирован.`);
+
+      bot.telegram.sendMessage(
+        user.userId,
+        `Вы были заблокированы администратором.`
+      );
+    } catch (error) {
+      console.error("Ошибка при блокировке:", error);
+      ctx.reply("Произошла ошибка при попытке заблокировать пользователя.");
+    }
+  });
+
+  bot.command("unblock_user", async (ctx) => {
+    let chatId = "" + ctx.chat.id;
+
+    // Проверяем, отправлена ли команда из группы администраторов
+    if (chatId !== adminChatId) {
+      return ctx.reply("Эта команда доступна только в группе администраторов.");
+    }
+
+    // Извлекаем аргументы команды (id)
+    const args = ctx.message.text.split(" ").slice(1);
+    if (args.length === 0) {
+      return ctx.reply(
+        "Пожалуйста, укажите ID пользователя. Например: /unblock_user 1234"
+      );
+    }
+
+    const id = args[0];
+    try {
+      const user = await User.findOne({ userId: id });
+      if (!user) {
+        return ctx.reply(`Пользователь с ID ${id} не найден.`);
+      }
+
+      user.isBlocked = false;
+      user.unpaidOrders = []
+      await user.save();
+
+      ctx.reply(`Пользователь с ID ${id} разблокирован.`);
+
+      bot.telegram.sendMessage(
+        user.userId,
+        `Вы были разблокированы администратором.`
+      );
+    } catch (error) {
+      console.error("Ошибка при разблокировке:", error);
+      ctx.reply("Произошла ошибка при попытке разблокировать пользователя.");
     }
   });
 
@@ -988,7 +1050,7 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       ctx.message.text === "🔶Райффайзен"
     ) {
       sendCard =
-        "Для получения реквизитов отправьте номер заявки в чат с Администратором";
+        "Для получения реквизитов отправьте #номерзаявки в чат с Администратором";
       sendCardOwner = "";
     } else if (ctx.message.text === "🔹AliPay") {
       sendCard = 13136022300;
@@ -1028,4 +1090,52 @@ function isWorkingTime() {
   }
 
   return { isOpen, hoursUntilOpen };
+}
+
+const formatDate = (date) => {
+  return date.toLocaleString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+async function sendGroupedOrders(chatId, orders, bot) {
+  const MAX_MESSAGE_LENGTH = 4096; // Максимальная длина сообщения
+  let currentMessage = "История ваших заявок:\n";
+  let messageLength = currentMessage.length;
+
+  for (let order of orders) {
+    const statusIcon =
+      order.status === "pending" || order.status === "waitingAccept"
+        ? "🔄"
+        : order.status === "completed"
+        ? "✅"
+        : "❌";
+    const formattedDate = formatDate(new Date(order.createdAt));
+    const orderMessage = `${statusIcon} ${formattedDate} #${
+      order.hash
+    }\n${order.sendAmount.toFixed(2)}${
+      order.sendCurrency
+    }➡️${order.receiveAmount.toFixed(2)}${order.receiveCurrency}\n\n`;
+
+    // Проверяем, будет ли добавление текущего заказа превышать лимит
+    if (messageLength + orderMessage.length > MAX_MESSAGE_LENGTH) {
+      // Если да, отправляем текущее накопленное сообщение и начинаем новое
+      await bot.telegram.sendMessage(chatId, currentMessage);
+      currentMessage = orderMessage;
+      messageLength = orderMessage.length;
+    } else {
+      // Если нет, просто добавляем информацию о заказе к текущему сообщению
+      currentMessage += orderMessage;
+      messageLength += orderMessage.length;
+    }
+  }
+
+  // После цикла проверяем, осталось ли непосланное сообщение
+  if (currentMessage.length > 0) {
+    await bot.telegram.sendMessage(chatId, currentMessage);
+  }
 }
