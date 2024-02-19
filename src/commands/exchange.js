@@ -977,9 +977,9 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       if (0 < amount && amount < 5000) {
         comission = 0.15;
       } else if (5000 <= amount && amount < 50000) {
-        comission = 0.1;
+        comission = 0.06;
       } else if (50000 <= amount && amount <= 300000) {
-        comission = 0.07;
+        comission = 0.05;
       }
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
