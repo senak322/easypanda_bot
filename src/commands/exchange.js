@@ -259,7 +259,9 @@ example@live.cn (почта 🔷Alipay)
         messageText += `Пользователь получает: ${savedOrder.receiveAmount} ${savedOrder.receiveCurrency} на ${savedOrder.receiveBank}\n`;
         messageText += `Имя владельца счета получения: ${savedOrder.ownerName}\n`;
         messageText += `Данные счета получения: ${savedOrder.ownerData}\n`;
-        messageText += `Дата создания заявки: ${formatDate(savedOrder.createdAt)}\n`;
+        messageText += `Дата создания заявки: ${formatDate(
+          savedOrder.createdAt
+        )}\n`;
 
         if (savedOrder.qrCodeFileId) {
           await bot.telegram.sendPhoto(adminChatId, savedOrder.qrCodeFileId, {
@@ -716,7 +718,7 @@ ${
       }
 
       user.isBlocked = false;
-      user.unpaidOrders = []
+      user.unpaidOrders = [];
       await user.save();
 
       ctx.reply(`Пользователь с ID ${id} разблокирован.`);
@@ -977,9 +979,9 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       if (0 < amount && amount < 5000) {
         comission = 0.15;
       } else if (5000 <= amount && amount < 50000) {
-        comission = 0.06;
+        comission = 0.1;
       } else if (50000 <= amount && amount <= 300000) {
-        comission = 0.05;
+        comission = 0.085;
       }
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
