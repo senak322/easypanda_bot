@@ -196,6 +196,10 @@ example@live.cn (почта 🔷Alipay)
   bot.hears("✅ Всё верно, создать заявку!", async (ctx) => {
     if (ctx.session.state === "submitExchange") {
       let user = await User.findOne({ userId: Number(ctx.from.id) });
+      let pandingOrder = await Order.findOne({
+        userId: Number(ctx.from.id),
+        status: "pending" || "waitingAccept",
+      });
       if (!user) {
         // Если пользователь не найден, создаем нового
         user = new User({
@@ -209,7 +213,6 @@ example@live.cn (почта 🔷Alipay)
       } else {
         const now = new Date();
         const aDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        console.log(user);
         // Фильтрация неоплаченных заявок за последние 24 часа
         const recentUnpaidOrders = user.unpaidOrders.filter(
           (order) => order.createdAt > aDayAgo
@@ -222,6 +225,14 @@ example@live.cn (почта 🔷Alipay)
           return ctx.reply("Вы заблокированы за создание неоплаченных заявок.");
         }
       }
+
+      if (pandingOrder) {
+        return ctx.reply(
+          `У вас уже есть незавершённая заявка. 
+Для завершения обмена или отмены заявки напишите Администратору нажав кнопку  "🆘 Поддержка".`
+        );
+      }
+
       const hash = crypto
         .createHash("sha256")
         .update(new Date().toISOString()) // Используйте текущую дату и время для уникальности
@@ -875,8 +886,9 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
 👤Имя владельца: ${ctx.session.ownerName}  
             `,
           Markup.keyboard([
-            "✅ Всё верно, создать заявку!",
-            mainMenuBtn,
+            ["✅ Всё верно, создать заявку!"],
+
+            [mainMenuBtn, "🆘 Поддержка"]
           ]).resize()
         );
 
