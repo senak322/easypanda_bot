@@ -78,7 +78,7 @@ async function sendGreetingAndRates(bot) {
 
   const message = `${greetings}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте, либо на сайте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🌎 Сайт](https://easypandamoney.com/)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
 
-  bot.telegram.sendMessage(adminChatId, message, {
+  bot.telegram.sendMessage(groupChatId, message, {
     parse_mode: "Markdown",
     disable_web_page_preview: true,
   });
@@ -89,7 +89,7 @@ export const startCronJobs = (bot) => {
   cron.schedule("* * * * *", () => checkExpiredOrders(bot));
 
   // Отправка приветствия и курсов валют три раза в день
-  cron.schedule("52 7 * * *", () => sendGreetingAndRates(bot), {
+  cron.schedule("0 9 * * *", () => sendGreetingAndRates(bot), {
     scheduled: true,
     timezone: "Europe/Moscow",
   });

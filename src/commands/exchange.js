@@ -78,21 +78,21 @@ export const exchangeCommand = (bot) => {
       switch (ctx.session.receiveCurrency) {
         case "Получить 🇷🇺 RUB":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-            limitFrom = 100;
+            limitFrom = 350;
             limitTo = 25000;
             currencyName = "🇷🇺 RUB";
           }
           break;
         case "Получить 🇺🇦 UAH":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-            limitFrom = 100;
+            limitFrom = 350;
             limitTo = 25000;
             currencyName = "🇺🇦 UAH";
           }
           break;
         case "Получить 🇨🇳 CNY":
           if (ctx.session.sendCurrency === "🇷🇺 RUB") {
-            limitFrom = 1000;
+            limitFrom = 5000;
             limitTo = 300000;
             currencyName = "🇨🇳 CNY";
           }
@@ -419,7 +419,7 @@ ${
     ctx.reply(
       `👇Ниже ты можешь ознакомиться с часто задаваемыми вопросами:
 
-/1 🐼 О компании EasyPandaMoney
+/1 🐼О компании EasyPandaMoney
 /2 ✅Какие гарантии?
 /3 💰Как обменять крупную сумму?
 /4 🔍Поиск по номеру заявки
@@ -758,11 +758,11 @@ ${
         // Логика переключения валюты
         ctx.session.state = "enteringReceiveAmount";
         if (ctx.session.currencyName === "🇨🇳 CNY") {
-          limitFromRecieve = 100;
+          limitFromRecieve = 350;
           limitToRecieve = 25000;
         }
         if (ctx.session.currencyName === "🇷🇺 RUB") {
-          limitFromRecieve = 1000;
+          limitFromRecieve = 5000;
           limitToRecieve = 300000;
         }
         if (ctx.session.currencyName === "🇺🇦 UAH") {
@@ -988,30 +988,28 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       return;
     }
     if (ctx.session.sendCurrency === "🇷🇺 RUB") {
-      if (0 < amount && amount < 5000) {
-        comission = 0.15;
-      } else if (5000 <= amount && amount < 50000) {
-        comission = 0.1;
+      if (5000 <= amount && amount < 50000) {
+        comission = 0.03;
       } else if (50000 <= amount && amount <= 300000) {
-        comission = 0.085;
+        comission = 0.03;
       }
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
       if (0 < amount && amount < 3500) {
-        comission = 0.08;
+        comission = 0.06;
       } else if (3500 <= amount && amount < 10000) {
         comission = 0.06;
       } else if (10000 <= amount && amount <= 25000) {
-        comission = 0.04;
+        comission = 0.06;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
       if (0 < amount && amount < 2000) {
-        comission = 0.17;
+        comission = 0.16;
       } else if (2000 <= amount && amount < 20000) {
-        comission = 0.11;
-      } else if (20000 <= amount && amount <= 50000) {
         comission = 0.1;
+      } else if (20000 <= amount && amount <= 50000) {
+        comission = 0.09;
       }
     }
 
