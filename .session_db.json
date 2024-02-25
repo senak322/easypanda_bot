@@ -83,8 +83,8 @@
             "resize_keyboard": true
           }
         },
-        "receiveCurrency": "Получить 🇷🇺 RUB",
-        "currencyName": "🇷🇺 RUB",
+        "receiveCurrency": "Получить 🇺🇦 UAH",
+        "currencyName": "🇺🇦 UAH",
         "limitFrom": 350,
         "limitTo": 25000
       }
