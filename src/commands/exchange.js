@@ -97,7 +97,7 @@ export const exchangeCommand = (bot) => {
             currencyName = "🇨🇳 CNY";
           }
           if (ctx.session.sendCurrency === "🇺🇦 UAH") {
-            limitFrom = 500;
+            limitFrom = 2000;
             limitTo = 50000;
             currencyName = "🇨🇳 CNY";
           }
@@ -766,7 +766,7 @@ ${
           limitToRecieve = 300000;
         }
         if (ctx.session.currencyName === "🇺🇦 UAH") {
-          limitFromRecieve = 500;
+          limitFromRecieve = 2000;
           limitToRecieve = 50000;
         }
         ctx.session.limitFromRecieve = limitFromRecieve;
