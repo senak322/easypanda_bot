@@ -1,10 +1,11 @@
 export const config = {
-  currencyRubUrl:
-    "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/rub.json",
-  currencyCnyUrl:
-    "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/cny.json",
-  currencyUahUrl:
-    "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/uah.json",
+  currencyUrl: "https://api.currencyapi.com/v3/latest",
+  // currencyRubUrl:
+  //   "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/rub.json",
+  // currencyCnyUrl:
+  //   "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/cny.json",
+  // currencyUahUrl:
+  //   "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/uah.json",
   mainMessage: `Я - телегам-бот🤖 для моментального обмена валют! 💱💰 Наш бот поддерживает обмен 🇨🇳CNY, 🇷🇺RUB, 🇺🇦UAH. Тут ты можешь:
 • 💰Оплачивать товары поставщикам через Alipay и карты Китая🇨🇳🛍️💳
 • 📧Отправлять деньги своим близким👨‍👩‍👧‍👦 и производить обмен валют, включая Юани, Рубли, Гривны и множество других валют. 💸💲
