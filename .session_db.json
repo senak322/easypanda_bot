@@ -64,13 +64,16 @@
     {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "enteringReceiveAmount",
-        "sendCurrency": "🇺🇦 UAH",
+        "state": "enteringAmount",
+        "sendCurrency": "🇨🇳 CNY",
         "menuReceiveCurrency": {
           "reply_markup": {
             "keyboard": [
               [
-                "Получить 🇨🇳 CNY"
+                "Получить 🇷🇺 RUB"
+              ],
+              [
+                "Получить 🇺🇦 UAH"
               ],
               [
                 "📲 Главное меню",
@@ -80,12 +83,10 @@
             "resize_keyboard": true
           }
         },
-        "receiveCurrency": "Получить 🇨🇳 CNY",
-        "currencyName": "🇨🇳 CNY",
-        "limitFrom": 500,
-        "limitTo": 50000,
-        "limitFromRecieve": 350,
-        "limitToRecieve": 25000
+        "receiveCurrency": "Получить 🇺🇦 UAH",
+        "currencyName": "🇺🇦 UAH",
+        "limitFrom": 350,
+        "limitTo": 25000
       }
     }
   ]

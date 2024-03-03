@@ -1,5 +1,6 @@
 export const config = {
-  currencyUrl: "https://api.currencyapi.com/v3/latest",
+  // currencyUrl: "https://api.currencyapi.com/v3/latest",
+  baseCurrencyUrl: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/",
   // currencyRubUrl:
   //   "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/rub.json",
   // currencyCnyUrl:

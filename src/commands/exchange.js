@@ -1004,9 +1004,7 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
-      if (0 < amount && amount < 2000) {
-        comission = 0.16;
-      } else if (2000 <= amount && amount < 20000) {
+       if (2000 <= amount && amount < 20000) {
         comission = 0.1;
       } else if (20000 <= amount && amount <= 50000) {
         comission = 0.09;

@@ -1,10 +1,6 @@
 import axios from "axios";
-import dotenv from "dotenv";
 import { config } from "../../config.js";
-
-const { currencyUrl } = config;
-dotenv.config();
-const apiToken = process.env.API_KEY;
+const { baseCurrencyUrl } = config;
 
 // const currencyToExchange = (ctx) => {
 //   let currency;
@@ -20,18 +16,13 @@ const apiToken = process.env.API_KEY;
 // };
 
 export async function getExchangeRate(ctx) {
-  let sendCurrencyCode = ctx.session.sendCurrency.slice(-3).toUpperCase(); // Получение кода валюты отправки
-  let receiveCurrencyCode = ctx.session.receiveCurrency.slice(-3).toUpperCase(); // Получение кода валюты получения
+  let sendCurrencyCode = ctx.session.sendCurrency.slice(-3).toLowerCase(); // Получение кода валюты отправки
+  let receiveCurrencyCode = ctx.session.receiveCurrency.slice(-3).toLowerCase(); // Получение кода валюты получения
 
   try {
-    const response = await axios.get(currencyUrl, {
-      params: {
-        apikey: apiToken,
-        currencies: receiveCurrencyCode,
-        base_currency: sendCurrencyCode,
-      },
-    });
-    const rate = response.data.data[receiveCurrencyCode].value;
+    const response = await axios.get(`${baseCurrencyUrl + sendCurrencyCode}.json`);
+    const rate = response.data[sendCurrencyCode][receiveCurrencyCode];
+    console.log(rate);
     return rate;
   } catch (error) {
     console.error("Error fetching exchange rate:", error);

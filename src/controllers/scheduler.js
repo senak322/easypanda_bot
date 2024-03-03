@@ -7,9 +7,7 @@ import { User } from "../models/User.js";
 const {
   adminChatId,
   groupChatId,
-  currencyRubUrl,
-  currencyCnyUrl,
-  currencyUahUrl,
+  baseCurrencyUrl
 } = config;
 
 const checkExpiredOrders = async (bot) => {
@@ -52,9 +50,9 @@ const checkExpiredOrders = async (bot) => {
 
 // Функция для получения курсов валют и добавления вашего процента
 async function getCustomExchangeRates() {
-  const rubCurr = await axios.get(currencyRubUrl);
-  const uahCurr = await axios.get(currencyUahUrl);
-  const cnyCurr = await axios.get(currencyCnyUrl);
+  const rubCurr = await axios.get(`${baseCurrencyUrl}rub.json`);
+  const uahCurr = await axios.get(`${baseCurrencyUrl}uah.json`);
+  const cnyCurr = await axios.get(`${baseCurrencyUrl}cny.json`);
 
   return {
     RUB_CNY: (rubCurr.data.rub.cny * 0.97).toFixed(10),
