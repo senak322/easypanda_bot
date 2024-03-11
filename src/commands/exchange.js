@@ -626,6 +626,38 @@ ${
     }
   });
 
+  bot.command("approved_orders", async (ctx) => {
+    let chatId = "" + ctx.chat.id;
+
+    // Проверяем, отправлена ли команда из группы администраторов
+    if (chatId !== adminChatId) {
+      return ctx.reply("Эта команда доступна только в группе администраторов.");
+    }
+
+    try {
+      // Извлекаем заявки в статусе "ожидает подтверждения"
+      const pendingOrders = await Order.find({ status: "completed" });
+
+      if (pendingOrders.length === 0) {
+        return ctx.reply("Нет подтвержденных заявок.");
+      }
+
+      let messageText = "Подтвержденные заявки:\n\n";
+      pendingOrders.forEach((order, index) => {
+        messageText += `${index + 1}. Заявка #${order.hash}\n`;
+        messageText += `От: [${order.userId}](tg://user?id=${order.userId})\n`;
+        messageText += `Сумма отправки: ${order.sendAmount} ${order.sendCurrency} ${order.sendBank}\n`;
+        messageText += `Сумма получения: ${order.receiveAmount} ${order.receiveCurrency} ${order.receiveBank}\n`;
+        messageText += `Дата: ${formatDate(order.createdAt)}\n\n`;
+      });
+
+      ctx.reply(messageText, { parse_mode: "Markdown" });
+    } catch (error) {
+      console.error("Ошибка при получении подтвержденных заявок:", error);
+      ctx.reply("Произошла ошибка при получении подтвержденных заявок.");
+    }
+  });
+
   bot.command("close_order", async (ctx) => {
     let chatId = "" + ctx.chat.id;
 
