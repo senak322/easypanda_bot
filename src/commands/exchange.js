@@ -345,12 +345,14 @@ ${
             },
           });
         } else {
-          await ctx.reply(ctx.session.howToSend);
-          await ctx.reply(`${ctx.session.sendCard}`);
+          if (ctx.session.howToSend && ctx.session.sendCard) {
+            await ctx.reply(`${ctx.session.howToSend}`);
+            await ctx.reply(`${ctx.session.sendCard}`);
+          }
         }
       } catch (error) {
         console.error(error);
-        ctx.reply("Произошла ошибка при создании заявки.", mainMenu);
+        ctx.reply("Произошла ошибка.", mainMenu);
       }
       ctx.session.state = "waitingForPaymentProof";
     }
@@ -888,7 +890,7 @@ ${ctx.session.recieveBank}: ${ctx.session.ownerData}
           Markup.keyboard([
             ["✅ Всё верно, создать заявку!"],
 
-            [mainMenuBtn, "🆘 Поддержка"]
+            [mainMenuBtn, "🆘 Поддержка"],
           ]).resize()
         );
 
@@ -1004,7 +1006,7 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
-       if (2000 <= amount && amount < 20000) {
+      if (2000 <= amount && amount < 20000) {
         comission = 0.1;
       } else if (20000 <= amount && amount <= 50000) {
         comission = 0.09;
