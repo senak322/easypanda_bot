@@ -78,14 +78,14 @@ export const exchangeCommand = (bot) => {
       switch (ctx.session.receiveCurrency) {
         case "Получить 🇷🇺 RUB":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-            limitFrom = 350;
+            limitFrom = 400;
             limitTo = 25000;
             currencyName = "🇷🇺 RUB";
           }
           break;
         case "Получить 🇺🇦 UAH":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-            limitFrom = 350;
+            limitFrom = 400;
             limitTo = 25000;
             currencyName = "🇺🇦 UAH";
           }
@@ -204,10 +204,9 @@ example@live.cn (почта 🔷Alipay)
         // Если пользователь не найден, создаем нового
         user = new User({
           userId: Number(ctx.from.id),
+          paidOrders: 0,
           unpaidOrders: [],
           isBlocked: false,
-          role: "user",
-          isAdmin: false,
         });
         await user.save();
       } else {
@@ -544,6 +543,10 @@ ${
       order.status = "completed";
       await order.save();
 
+      const user = await User.findOne({ userId: order.userId });
+      user.paidOrders = user.paidOrders ? user.paidOrders + 1 : 1;
+      await user.save();
+
       // Отправка уведомления пользователю
       bot.telegram.sendMessage(
         order.userId,
@@ -655,6 +658,39 @@ ${
     } catch (error) {
       console.error("Ошибка при получении подтвержденных заявок:", error);
       ctx.reply("Произошла ошибка при получении подтвержденных заявок.");
+    }
+  });
+
+  bot.command("all_users", async (ctx) => {
+    let chatId = "" + ctx.chat.id;
+
+    // Проверяем, отправлена ли команда из группы администраторов
+    if (chatId !== adminChatId) {
+      return ctx.reply("Эта команда доступна только в группе администраторов.");
+    }
+
+    try {
+      // Извлекаем заявки в статусе "ожидает подтверждения"
+      const users = await User.find({});
+
+      if (users.length === 0) {
+        return ctx.reply("Нет пользователей.");
+      }
+
+      let messageText = "Пользователи:\n\n";
+      users.forEach((user, index) => {
+        messageText += `${index + 1}. ID: [${user.userId}](tg://user?id=${
+          user.userId
+        })\n`;
+        messageText += `isBlocked: ${user.isBlocked}\n`;
+        messageText += `paidOrders: ${user.paidOrders}\n\n`;
+        // messageText += `unpaidOrders: ${user.unpaidOrders}\n\n`;
+      });
+
+      ctx.reply(messageText, { parse_mode: "Markdown" });
+    } catch (error) {
+      console.error("Ошибка при получении пользователей:", error);
+      ctx.reply("Произошла ошибка при получении пользователей.");
     }
   });
 
@@ -792,7 +828,7 @@ ${
         // Логика переключения валюты
         ctx.session.state = "enteringReceiveAmount";
         if (ctx.session.currencyName === "🇨🇳 CNY") {
-          limitFromRecieve = 350;
+          limitFromRecieve = 400;
           limitToRecieve = 25000;
         }
         if (ctx.session.currencyName === "🇷🇺 RUB") {
@@ -825,7 +861,7 @@ ${
         // Пользователь ввел корректную сумму
         // Далее логика обработки обмена
         ctx.session.howToSend = ctx.message.text;
-        const howToRecieve = getExchangeFormula(ctx, rate);
+        const howToRecieve = await getExchangeFormula(ctx, rate);
         ctx.session.howToRecieve = howToRecieve;
         ctx.session.state = "chooseSendBank";
         ctx.reply(
@@ -862,7 +898,7 @@ ${
           ctx.session.limitToRecieve
         )
       ) {
-        const howToSend = getExchangeFormula(ctx, rate);
+        const howToSend = await getExchangeFormula(ctx, rate);
         ctx.session.howToSend = howToSend;
         ctx.session.howToRecieve = enteredAmount;
         ctx.session.state = "chooseSendBank";
@@ -999,14 +1035,25 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     return amount >= min && amount <= max;
   }
 
-  const howMuchComission = (ctx, rate) => {
+  const howMuchPaidFromUser = async (ctx) => {
+    const user = await User.findOne({ userId: ctx.from.id });
+    const paidOrders = user && user.paidOrders ? user.paidOrders : 0;
+    const isMorePaid = paidOrders >= 2;
+    return isMorePaid;
+  };
+
+  const howMuchComission = async (ctx, rate) => {
     let comission = 0;
+
+    const isMorePaid = await howMuchPaidFromUser(ctx);
+
     const amount =
       ctx.session.state === "enteringAmount"
         ? ctx.message.text
         : ctx.session.state === "enteringReceiveAmount"
         ? ctx.message.text / rate
         : 0;
+
     if (0 >= ctx.session.amount) {
       ctx.reply(
         `⚠️ Введите число от ${
@@ -1023,50 +1070,54 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     }
     if (ctx.session.sendCurrency === "🇷🇺 RUB") {
       if (5000 <= amount && amount < 50000) {
-        comission = 0.03;
+        comission = isMorePaid ? 0.08 : 0.05;
       } else if (50000 <= amount && amount <= 300000) {
-        comission = 0.03;
+        comission = isMorePaid ? 0.08 : 0.05;
       }
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
       if (0 < amount && amount < 3500) {
-        comission = 0.06;
+        comission = isMorePaid ? 0.09 : 0.06;
       } else if (3500 <= amount && amount < 10000) {
-        comission = 0.06;
+        comission = isMorePaid ? 0.09 : 0.06;
       } else if (10000 <= amount && amount <= 25000) {
-        comission = 0.06;
+        comission = isMorePaid ? 0.09 : 0.06;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
       if (2000 <= amount && amount < 20000) {
-        comission = 0.1;
+        comission = isMorePaid ? 0.11 : 0.1;
       } else if (20000 <= amount && amount <= 50000) {
-        comission = 0.09;
+        comission = isMorePaid ? 0.1 : 0.09;
       }
     }
 
     return comission;
   };
 
-  function getExchangeFormula(ctx, rate) {
+  async function getExchangeFormula(ctx, rate) {
     let receiveSum = 0;
-    // let desiredReceiveAmount = 0
+    const comission = await howMuchComission(ctx, rate);
+
     if (ctx.session.state === "enteringAmount") {
-      if (ctx.session.sendCurrency === "🇷🇺 RUB" || "🇺🇦 UAH") {
+      if (
+        ctx.session.sendCurrency === "🇷🇺 RUB" ||
+        ctx.session.sendCurrency === "🇺🇦 UAH"
+      ) {
         const initialReceiveSum = rate * ctx.message.text;
         receiveSum = Math.floor(
-          initialReceiveSum - initialReceiveSum * howMuchComission(ctx, rate)
+          initialReceiveSum - initialReceiveSum * comission
         );
         return receiveSum;
       } else if (ctx.session.sendCurrency === "🇨🇳 CNY") {
         const initialReceiveSum = rate * ctx.message.text;
         receiveSum = Math.floor(
-          initialReceiveSum + initialReceiveSum * howMuchComission(ctx, rate)
+          initialReceiveSum + initialReceiveSum * comission
         );
         return receiveSum;
       }
     } else if (ctx.session.state === "enteringReceiveAmount") {
-      const comissionRate = howMuchComission(ctx, rate);
+      const comissionRate = await howMuchComission(ctx, rate);
       // Рассчитываем сумму к отправке с учетом комиссии
       receiveSum = Math.floor(ctx.message.text / (rate * (1 - comissionRate)));
       return receiveSum;

@@ -1,4 +1,3 @@
-import { Markup } from "telegraf";
 import { mainMenu } from "../keyboards/mainMenu.js";
 import { config } from "../../config.js";
 import { User } from "../models/User.js";
@@ -11,6 +10,9 @@ export const startCommand = (bot) => {
     if (!user) {
       user = new User({
         userId: userId,
+        paidOrders: 0,
+        unpaidOrders: [],
+        isBlocked: false,
         // другие начальные настройки пользователя
       });
       await user.save();
