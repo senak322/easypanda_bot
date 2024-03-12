@@ -55,7 +55,7 @@ async function getCustomExchangeRates() {
   const cnyCurr = await axios.get(`${baseCurrencyUrl}cny.json`);
 
   return {
-    RUB_CNY: (rubCurr.data.rub.cny * 0.97).toFixed(10),
+    RUB_CNY: (rubCurr.data.rub.cny * 0.96).toFixed(10),
     UAH_CNY: (uahCurr.data.uah.cny * 0.91).toFixed(10),
     CNY_RUB: (cnyCurr.data.cny.rub * 0.94).toFixed(10),
     CNY_UAH: (cnyCurr.data.cny.uah * 0.94).toFixed(10),
