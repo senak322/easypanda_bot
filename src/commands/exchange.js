@@ -1038,7 +1038,8 @@ ${waitingOrder}Среднее время обработки платежа 30 м
   const howMuchPaidFromUser = async (ctx) => {
     const user = await User.findOne({ userId: ctx.from.id });
     const paidOrders = user && user.paidOrders ? user.paidOrders : 0;
-    const isMorePaid = paidOrders >= 2;
+    const isMorePaid = paidOrders >= 3;
+    
     return isMorePaid;
   };
 
@@ -1077,11 +1078,11 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
       if (0 < amount && amount < 3500) {
-        comission = isMorePaid ? 0.08 : 0.08;
+        comission = isMorePaid ? 0.05 : 0.03;
       } else if (3500 <= amount && amount < 10000) {
-        comission = isMorePaid ? 0.08 : 0.08;
+        comission = isMorePaid ? 0.05 : 0.03;
       } else if (10000 <= amount && amount <= 25000) {
-        comission = isMorePaid ? 0.08 : 0.08;
+        comission = isMorePaid ? 0.05 : 0.03;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
@@ -1106,7 +1107,7 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       ) {
         const initialReceiveSum = rate * ctx.message.text;
         receiveSum = Math.floor(
-          initialReceiveSum - initialReceiveSum * comission
+          initialReceiveSum - (initialReceiveSum * comission)
         );
         return receiveSum;
       } else if (ctx.session.sendCurrency === "🇨🇳 CNY") {
