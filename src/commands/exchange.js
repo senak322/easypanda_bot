@@ -1038,7 +1038,7 @@ ${waitingOrder}Среднее время обработки платежа 30 м
   const howMuchPaidFromUser = async (ctx) => {
     const user = await User.findOne({ userId: ctx.from.id });
     const paidOrders = user && user.paidOrders ? user.paidOrders : 0;
-    const isMorePaid = paidOrders >= 13;
+    const isMorePaid = paidOrders >= 3;
 
     return isMorePaid;
   };
