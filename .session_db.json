@@ -84,34 +84,6 @@
         "limitFromRecieve": 400,
         "limitToRecieve": 25000
       }
-    },
-    {
-      "id": "1645639471:1645639471",
-      "data": {
-        "state": "enteringAmount",
-        "sendCurrency": "🇨🇳 CNY",
-        "menuReceiveCurrency": {
-          "reply_markup": {
-            "keyboard": [
-              [
-                "Получить 🇷🇺 RUB"
-              ],
-              [
-                "Получить 🇺🇦 UAH"
-              ],
-              [
-                "📲 Главное меню",
-                "🔙Назад"
-              ]
-            ],
-            "resize_keyboard": true
-          }
-        },
-        "receiveCurrency": "Получить 🇷🇺 RUB",
-        "currencyName": "🇷🇺 RUB",
-        "limitFrom": 400,
-        "limitTo": 25000
-      }
     }
   ]
 }
