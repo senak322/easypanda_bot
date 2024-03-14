@@ -1078,11 +1078,11 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
       if (0 < amount && amount < 3500) {
-        comission = isMorePaid ? 0.05 : 0.03;
+        comission = isMorePaid ? 0.05 : 0.035;
       } else if (3500 <= amount && amount < 10000) {
-        comission = isMorePaid ? 0.05 : 0.03;
+        comission = isMorePaid ? 0.05 : 0.035;
       } else if (10000 <= amount && amount <= 25000) {
-        comission = isMorePaid ? 0.05 : 0.03;
+        comission = isMorePaid ? 0.05 : 0.035;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
@@ -1101,23 +1101,11 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     const comission = await howMuchComission(ctx, rate);
 
     if (ctx.session.state === "enteringAmount") {
-      if (
-        ctx.session.sendCurrency === "🇷🇺 RUB" ||
-        ctx.session.sendCurrency === "🇺🇦 UAH"
-      ) {
-        const initialReceiveSum = rate * ctx.message.text;
+      const initialReceiveSum = rate * ctx.message.text;
         receiveSum = Math.floor(
           initialReceiveSum - (initialReceiveSum * comission)
         );
         return receiveSum;
-      } else if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-        const initialReceiveSum = rate * ctx.message.text;
-        console.log(initialReceiveSum);
-        receiveSum = Math.floor(
-          initialReceiveSum - (initialReceiveSum * comission)
-        );
-        return receiveSum;
-      }
     } else if (ctx.session.state === "enteringReceiveAmount") {
       const comissionRate = await howMuchComission(ctx, rate);
       // Рассчитываем сумму к отправке с учетом комиссии
