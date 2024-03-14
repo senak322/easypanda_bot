@@ -1038,8 +1038,8 @@ ${waitingOrder}Среднее время обработки платежа 30 м
   const howMuchPaidFromUser = async (ctx) => {
     const user = await User.findOne({ userId: ctx.from.id });
     const paidOrders = user && user.paidOrders ? user.paidOrders : 0;
-    const isMorePaid = paidOrders >= 3;
-    
+    const isMorePaid = paidOrders >= 13;
+
     return isMorePaid;
   };
 
@@ -1070,19 +1070,23 @@ ${waitingOrder}Среднее время обработки платежа 30 м
       return;
     }
     if (ctx.session.sendCurrency === "🇷🇺 RUB") {
-      if (5000 <= amount && amount < 50000) {
-        comission = isMorePaid ? 0.06 : 0.06;
+      if (5000 <= amount && amount < 30000) {
+        comission = isMorePaid ? 0.08 : 0.07;
+      } else if (30000 <= amount && amount <= 50000) {
+        comission = isMorePaid ? 0.07 : 0.06;
       } else if (50000 <= amount && amount <= 300000) {
-        comission = isMorePaid ? 0.06 : 0.06;
+        comission = isMorePaid ? 0.06 : 0.05;
       }
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-      if (0 < amount && amount < 3500) {
-        comission = isMorePaid ? 0.05 : 0.035;
+      if (0 < amount && amount < 1000) {
+        comission = isMorePaid ? 0.06 : 0.05;
+      } else if (1000 <= amount && amount < 3500) {
+        comission = isMorePaid ? 0.05 : 0.04;
       } else if (3500 <= amount && amount < 10000) {
-        comission = isMorePaid ? 0.05 : 0.035;
+        comission = isMorePaid ? 0.04 : 0.025;
       } else if (10000 <= amount && amount <= 25000) {
-        comission = isMorePaid ? 0.05 : 0.035;
+        comission = isMorePaid ? 0.03 : 0.02;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
@@ -1102,10 +1106,10 @@ ${waitingOrder}Среднее время обработки платежа 30 м
 
     if (ctx.session.state === "enteringAmount") {
       const initialReceiveSum = rate * ctx.message.text;
-        receiveSum = Math.floor(
-          initialReceiveSum - (initialReceiveSum * comission)
-        );
-        return receiveSum;
+      receiveSum = Math.floor(
+        initialReceiveSum - initialReceiveSum * comission
+      );
+      return receiveSum;
     } else if (ctx.session.state === "enteringReceiveAmount") {
       const comissionRate = await howMuchComission(ctx, rate);
       // Рассчитываем сумму к отправке с учетом комиссии

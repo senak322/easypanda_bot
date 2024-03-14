@@ -49,19 +49,19 @@ const checkExpiredOrders = async (bot) => {
 };
 
 // Функция для получения курсов валют и добавления вашего процента
-async function getCustomExchangeRates() {
-  const rubCurr = await axios.get(`${baseCurrencyUrl}rub.json`);
-  const uahCurr = await axios.get(`${baseCurrencyUrl}uah.json`);
-  const cnyCurr = await axios.get(`${baseCurrencyUrl}cny.json`);
+// async function getCustomExchangeRates() {
+//   const rubCurr = await axios.get(`${baseCurrencyUrl}rub.json`);
+//   const uahCurr = await axios.get(`${baseCurrencyUrl}uah.json`);
+//   const cnyCurr = await axios.get(`${baseCurrencyUrl}cny.json`);
 
-  return {
-    RUB_CNY: (rubCurr.data.rub.cny * 0.96).toFixed(10),
-    UAH_CNY: (uahCurr.data.uah.cny * 0.91).toFixed(10),
-    CNY_RUB: (cnyCurr.data.cny.rub * 0.94).toFixed(10),
-    CNY_UAH: (cnyCurr.data.cny.uah * 0.94).toFixed(10),
-    // Добавьте другие пары валют по аналогии
-  };
-}
+//   return {
+//     RUB_CNY: (rubCurr.data.rub.cny * 0.96).toFixed(10),
+//     UAH_CNY: (uahCurr.data.uah.cny * 0.91).toFixed(10),
+//     CNY_RUB: (cnyCurr.data.cny.rub * 0.94).toFixed(10),
+//     CNY_UAH: (cnyCurr.data.cny.uah * 0.94).toFixed(10),
+//     // Добавьте другие пары валют по аналогии
+//   };
+// }
 
 // Функция для отправки сообщения с приветствием и курсами валют
 async function sendGreetingAndRates(bot) {
@@ -71,10 +71,10 @@ async function sendGreetingAndRates(bot) {
   // const currentHour = new Date().getHours();
   // const greetingIndex = currentHour < 12 ? 0 : currentHour < 18 ? 1 : 2;
 
-  const rates = await getCustomExchangeRates();
-  const ratesMessage = `RUB🇷🇺 -> CNY🇨🇳 ${rates.RUB_CNY}\nUAH🇺🇦 -> CNY🇨🇳 ${rates.UAH_CNY}\nCNY🇨🇳 -> RUB🇷🇺 ${rates.CNY_RUB}\nCNY🇨🇳 -> UAH🇺🇦 ${rates.CNY_UAH}\n`;
+  // const rates = await getCustomExchangeRates();
+  const ratesMessage = `RUB🇷🇺 -> CNY🇨🇳\nUAH🇺🇦 -> CNY🇨🇳\nCNY🇨🇳 -> RUB🇷🇺\nCNY🇨🇳 -> UAH🇺🇦\n`;
 
-  const message = `${greetings}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nКурс на момент публикации:\n${ratesMessage}\n\nПроверь актуальный курс в боте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
+  const message = `${greetings}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nУ нас можно обменять:\n${ratesMessage}\n\nПроверь актуальный курс в боте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
 
   bot.telegram.sendMessage(groupChatId, message, {
     parse_mode: "Markdown",
