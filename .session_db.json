@@ -108,18 +108,16 @@
         "currencyName": "🇨🇳 CNY",
         "limitFrom": 5000,
         "limitTo": 300000,
-        "limitFromRecieve": 400,
-        "limitToRecieve": 25000,
-        "howToSend": 5474,
-        "howToRecieve": 400,
+        "howToSend": "5000",
+        "howToRecieve": 362,
         "sendCard": 2202206296854099,
         "sendBank": "✅Сбер",
         "sendCardOwner": "Александр В.",
         "recieveBank": "🔷AliPay",
-        "ownerData": "454554",
-        "ownerName": "апрапр",
-        "orderId": "65f318e5246ec276e2f26703",
-        "hash": "ED5548"
+        "ownerData": "15151515",
+        "ownerName": "зддздз",
+        "orderId": "65f3e83dd39aaf3663de2599",
+        "hash": "18D595"
       }
     }
   ]

@@ -814,6 +814,44 @@ ${
     }
   });
 
+  bot.command("promo", async (ctx) => {
+    let chatId = "" + ctx.chat.id;
+
+    // Проверяем, отправлена ли команда из группы администраторов
+    if (chatId !== adminChatId) {
+      return ctx.reply("Эта команда доступна только в группе администраторов.");
+    }
+
+    // Извлекаем аргументы команды (Промо сообщение)
+    const args = ctx.message.text.split(" ").slice(1);
+    if (args.length === 0) {
+      return ctx.reply(
+        "Пожалуйста, укажите Промо сообщение. Например: /promo Промо сообщение"
+      );
+    }
+    const promoMessage = args.join(" ")
+
+    try {
+      const allUsers = await User.find({ });
+      if (!allUsers) {
+        return ctx.reply(`Пользователи не найдены.`);
+      }
+
+      allUsers.forEach((user) => {
+        bot.telegram.sendMessage(
+          user.userId,
+          `${promoMessage}`
+        );
+      })
+
+      ctx.reply(`Пользователям было отправлено промо сообщение.`);
+
+    } catch (error) {
+      console.error("Ошибка при отправке промо:", error);
+      ctx.reply("Произошла ошибка при попытке отправке промо.");
+    }
+  });
+
   bot.on("text", async (ctx) => {
     let limitToRecieve;
     let limitFromRecieve;
