@@ -1,14 +1,10 @@
 import cron from "node-cron";
 import Order from "../models/ExchangeOrder.js"; // Убедитесь, что путь к модели верный
 import { config } from "../../config.js";
-import axios from "axios";
+// import axios from "axios";
 import { User } from "../models/User.js";
 
-const {
-  adminChatId,
-  groupChatId,
-  baseCurrencyUrl
-} = config;
+const { adminChatId, groupChatId } = config;
 
 const checkExpiredOrders = async (bot) => {
   try {
@@ -33,9 +29,9 @@ const checkExpiredOrders = async (bot) => {
 
 ⚠️ Если в течение суток мне прийдется отменить твою заявку более трех раз, твой аккаунт может быть заблокирован
       
-Пожалуйста, не создавай заявку, если не готов оплатить её в отведенное время 🙏🏻`
+Пожалуйста, не создавай заявку, если не готов оплатить её в отведенное время 🙏🏻`;
 
-      let textForUser = messageText + userText
+      let textForUser = messageText + userText;
 
       // Здесь логика отправки сообщения пользователю
       bot.telegram.sendMessage(order.userId, textForUser);
@@ -65,19 +61,24 @@ const checkExpiredOrders = async (bot) => {
 
 // Функция для отправки сообщения с приветствием и курсами валют
 async function sendGreetingAndRates(bot) {
-  const greetings = "Доброго времени суток!";
+  const message = `Доброго времени суток\\!
 
-  // Получаем текущий час для определения нужного приветствия
-  // const currentHour = new Date().getHours();
-  // const greetingIndex = currentHour < 12 ? 0 : currentHour < 18 ? 1 : 2;
+🤖 \\@EasyPandaMoney\\_bot 🐼
+Сервис для быстрого и удобного обмена валют💸
+Горячий курс🔥
+У нас можно обменять:
+RUB🇷🇺 \\-\\> CNY🇨🇳
+UAH🇺🇦 \\-\\> CNY🇨🇳
+CNY🇨🇳 \\-\\> RUB🇷🇺
+CNY🇨🇳 \\-\\> UAH🇺🇦
 
-  // const rates = await getCustomExchangeRates();
-  const ratesMessage = `RUB🇷🇺 -> CNY🇨🇳\nUAH🇺🇦 -> CNY🇨🇳\nCNY🇨🇳 -> RUB🇷🇺\nCNY🇨🇳 -> UAH🇺🇦\n`;
-
-  const message = `${greetings}\n\n🚀Экспресс обмен валют💸\nГорячий курс🔥\nУ нас можно обменять:\n${ratesMessage}\n\nПроверь актуальный курс в боте!\n[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)\n[🤖 Бот](https://t.me/EasyPandaMoney_bot)\n[👨‍⚕️Тех.Поддержка](https://t.me/easypandamoney)`;
+Проверь актуальный курс в боте\\!
+[🐼 Основная группа](https://t.me/EasyPandaMoney_Chat)
+[🤖 Бот](https://t.me/EasyPandaMoney_bot)
+[👨‍⚕️Тех\\.Поддержка](https://t.me/easypandamoney)`;
 
   bot.telegram.sendMessage(groupChatId, message, {
-    parse_mode: "Markdown",
+    parse_mode: "MarkdownV2",
     disable_web_page_preview: true,
   });
 }
