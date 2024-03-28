@@ -26,4 +26,5 @@ export const config = {
   closedOrder: "❌",
   waitingOrder: "🔄",
   completedOrder: "✅",
+  max_message_length: 4096,
 };

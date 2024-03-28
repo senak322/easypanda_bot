@@ -20,6 +20,7 @@ const {
   adminChatId,
   waitingOrder,
   completedOrder,
+  max_message_length,
 } = config;
 
 export const exchangeCommand = (bot) => {
@@ -670,24 +671,39 @@ ${
     }
 
     try {
-      // Извлекаем заявки в статусе "ожидает подтверждения"
+      // Извлекаем всех юезорв
       const users = await User.find({});
 
       if (users.length === 0) {
         return ctx.reply("Нет пользователей.");
       }
 
-      let messageText = "Пользователи:\n\n";
+      let messages = [];
+      let currentMessage = "Пользователи:\n\n";
+
       users.forEach((user, index) => {
-        messageText += `${index + 1}. ID: [${user.userId}](tg://user?id=${
-          user.userId
-        })\n`;
-        messageText += `isBlocked: ${user.isBlocked}\n`;
-        messageText += `paidOrders: ${user.paidOrders}\n\n`;
-        // messageText += `unpaidOrders: ${user.unpaidOrders}\n\n`;
+        let userMessage =
+          `${index + 1}. ID: [${user.userId}](tg://user?id=${user.userId})\n` +
+          `isBlocked: ${user.isBlocked}\n` +
+          `paidOrders: ${user.paidOrders}\n\n`;
+
+        if (currentMessage.length + userMessage.length > 4096) {
+          messages.push(currentMessage);
+          currentMessage = userMessage;
+        } else {
+          currentMessage += userMessage;
+        }
       });
 
-      ctx.reply(messageText, { parse_mode: "Markdown" });
+      if (currentMessage) {
+        messages.push(currentMessage);
+      }
+
+      for (const message of messages) {
+        await bot.telegram.sendMessage(chatId, message, {
+          parse_mode: "Markdown",
+        });
+      }
     } catch (error) {
       console.error("Ошибка при получении пользователей:", error);
       ctx.reply("Произошла ошибка при получении пользователей.");
@@ -829,23 +845,19 @@ ${
         "Пожалуйста, укажите Промо сообщение. Например: /promo Промо сообщение"
       );
     }
-    const promoMessage = args.join(" ")
+    const promoMessage = args.join(" ");
 
     try {
-      const allUsers = await User.find({ });
+      const allUsers = await User.find({});
       if (!allUsers) {
         return ctx.reply(`Пользователи не найдены.`);
       }
 
       allUsers.forEach((user) => {
-        bot.telegram.sendMessage(
-          user.userId,
-          `${promoMessage}`
-        );
-      })
+        bot.telegram.sendMessage(user.userId, `${promoMessage}`);
+      });
 
       ctx.reply(`Пользователям было отправлено промо сообщение.`);
-
     } catch (error) {
       console.error("Ошибка при отправке промо:", error);
       ctx.reply("Произошла ошибка при попытке отправке промо.");
@@ -1230,7 +1242,6 @@ const formatDate = (date) => {
 };
 
 async function sendGroupedOrders(chatId, orders, bot) {
-  const MAX_MESSAGE_LENGTH = 4096; // Максимальная длина сообщения
   let currentMessage = "История ваших заявок:\n";
   let messageLength = currentMessage.length;
 
@@ -1249,7 +1260,7 @@ async function sendGroupedOrders(chatId, orders, bot) {
     }➡️${order.receiveAmount.toFixed(2)}${order.receiveCurrency}\n\n`;
 
     // Проверяем, будет ли добавление текущего заказа превышать лимит
-    if (messageLength + orderMessage.length > MAX_MESSAGE_LENGTH) {
+    if (messageLength + orderMessage.length > max_message_length) {
       // Если да, отправляем текущее накопленное сообщение и начинаем новое
       await bot.telegram.sendMessage(chatId, currentMessage);
       currentMessage = orderMessage;
@@ -1266,3 +1277,5 @@ async function sendGroupedOrders(chatId, orders, bot) {
     await bot.telegram.sendMessage(chatId, currentMessage);
   }
 }
+
+async function sendGroupedUsers() {}
