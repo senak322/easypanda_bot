@@ -632,6 +632,9 @@ ${
 
   bot.command("approved_orders", async (ctx) => {
     let chatId = "" + ctx.chat.id;
+    let messageText = "Подтвержденные заявки:\n\n";
+    let messageLength = messageText.length;
+    let index = 0;
 
     // Проверяем, отправлена ли команда из группы администраторов
     if (chatId !== adminChatId) {
@@ -646,14 +649,27 @@ ${
         return ctx.reply("Нет подтвержденных заявок.");
       }
 
-      let messageText = "Подтвержденные заявки:\n\n";
-      pendingOrders.forEach((order, index) => {
-        messageText += `${index + 1}. Заявка #${order.hash}\n`;
-        messageText += `От: [${order.userId}](tg://user?id=${order.userId})\n`;
-        messageText += `Сумма отправки: ${order.sendAmount} ${order.sendCurrency} ${order.sendBank}\n`;
-        messageText += `Сумма получения: ${order.receiveAmount} ${order.receiveCurrency} ${order.receiveBank}\n`;
-        messageText += `Дата: ${formatDate(order.createdAt)}\n\n`;
-      });
+      for (let order of pendingOrders) {
+        index++;
+        let currentMessage = `${index}. Заявка #${order.hash}
+От: [${order.userId}](tg://user?id=${order.userId})
+Сумма отправки: ${order.sendAmount} ${order.sendCurrency} ${order.sendBank}
+Сумма получения: ${order.receiveAmount} ${order.receiveCurrency} ${
+          order.receiveBank
+        }
+Дата: ${formatDate(order.createdAt)}\n\n`;
+        // Проверяем, будет ли добавление текущего заказа превышать лимит
+        if (messageLength + currentMessage.length > max_message_length) {
+          // Если да, отправляем текущее накопленное сообщение и начинаем новое
+          await ctx.reply(messageText, { parse_mode: "Markdown" });
+          messageText = currentMessage;
+          messageLength = currentMessage.length;
+        } else {
+          // Если нет, просто добавляем информацию о заказе к текущему сообщению
+          messageText += currentMessage;
+          messageLength += currentMessage.length;
+        }
+      }
 
       ctx.reply(messageText, { parse_mode: "Markdown" });
     } catch (error) {
@@ -1278,4 +1294,4 @@ async function sendGroupedOrders(chatId, orders, bot) {
   }
 }
 
-async function sendGroupedUsers() {}
+async function sendGroupedApprovedorders(ctx) {}
