@@ -3,7 +3,7 @@
     {
       "id": "1645639471:1645639471",
       "data": {
-        "state": "waitingForPaymentProof",
+        "state": "submitExchange",
         "sendCurrency": "🇷🇺 RUB",
         "menuReceiveCurrency": {
           "reply_markup": {
@@ -24,15 +24,13 @@
         "limitFrom": 5000,
         "limitTo": 300000,
         "howToSend": "5000",
-        "howToRecieve": 362,
+        "howToRecieve": 365,
         "sendCard": 2202206296854099,
         "sendBank": "✅Сбер",
         "sendCardOwner": "Александр В.",
         "recieveBank": "🔷AliPay",
-        "ownerData": "595995",
-        "ownerName": "nnjnj'",
-        "orderId": "6611287258bce44fceba1d37",
-        "hash": "727D27"
+        "ownerData": "515151",
+        "ownerName": "dfgdgfdffg"
       }
     }
   ]

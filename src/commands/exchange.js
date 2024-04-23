@@ -1138,7 +1138,7 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     if (ctx.session.sendCurrency === "🇷🇺 RUB") {
       if (5000 <= amount && amount < 30000) {
         comission = isMorePaid ? 0.08 : 0.07;
-      } else if (30000 <= amount && amount <= 50000) {
+      } else if (30000 <= amount && amount < 50000) {
         comission = isMorePaid ? 0.07 : 0.06;
       } else if (50000 <= amount && amount <= 300000) {
         comission = isMorePaid ? 0.06 : 0.05;
