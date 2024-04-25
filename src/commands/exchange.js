@@ -1137,22 +1137,22 @@ ${waitingOrder}Среднее время обработки платежа 30 м
     }
     if (ctx.session.sendCurrency === "🇷🇺 RUB") {
       if (5000 <= amount && amount < 30000) {
-        comission = isMorePaid ? 0.08 : 0.07;
+        comission = isMorePaid ? 0.1 : 0.09;
       } else if (30000 <= amount && amount < 50000) {
-        comission = isMorePaid ? 0.07 : 0.06;
+        comission = isMorePaid ? 0.09 : 0.08;
       } else if (50000 <= amount && amount <= 300000) {
-        comission = isMorePaid ? 0.06 : 0.05;
+        comission = isMorePaid ? 0.08 : 0.07;
       }
     }
     if (ctx.session.sendCurrency === "🇨🇳 CNY") {
       if (0 < amount && amount < 1000) {
-        comission = isMorePaid ? 0.06 : 0.05;
+        comission = isMorePaid ? 0.08 : 0.07;
       } else if (1000 <= amount && amount < 3500) {
-        comission = isMorePaid ? 0.05 : 0.04;
+        comission = isMorePaid ? 0.07 : 0.06;
       } else if (3500 <= amount && amount < 10000) {
-        comission = isMorePaid ? 0.04 : 0.025;
+        comission = isMorePaid ? 0.06 : 0.045;
       } else if (10000 <= amount && amount <= 25000) {
-        comission = isMorePaid ? 0.03 : 0.02;
+        comission = isMorePaid ? 0.05 : 0.03;
       }
     }
     if (ctx.session.sendCurrency === "🇺🇦 UAH") {
