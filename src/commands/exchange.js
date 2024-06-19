@@ -1228,7 +1228,7 @@ function isWorkingTime() {
     new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" })
   );
   const hours = pekingTime.getHours();
-  const workingStartHour = 9;
+  const workingStartHour = 14;
   const workingEndHour = 23;
 
   const isOpen = hours >= workingStartHour && hours < workingEndHour;
