@@ -79,26 +79,26 @@ export const exchangeCommand = (bot) => {
       switch (ctx.session.receiveCurrency) {
         case "Получить 🇷🇺 RUB":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-            limitFrom = 400;
+            limitFrom = 700;
             limitTo = 25000;
             currencyName = "🇷🇺 RUB";
           }
           break;
         case "Получить 🇺🇦 UAH":
           if (ctx.session.sendCurrency === "🇨🇳 CNY") {
-            limitFrom = 400;
+            limitFrom = 700;
             limitTo = 25000;
             currencyName = "🇺🇦 UAH";
           }
           break;
         case "Получить 🇨🇳 CNY":
           if (ctx.session.sendCurrency === "🇷🇺 RUB") {
-            limitFrom = 5000;
+            limitFrom = 10000;
             limitTo = 300000;
             currencyName = "🇨🇳 CNY";
           }
           if (ctx.session.sendCurrency === "🇺🇦 UAH") {
-            limitFrom = 2000;
+            limitFrom = 4400;
             limitTo = 50000;
             currencyName = "🇨🇳 CNY";
           }

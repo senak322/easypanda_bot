@@ -1,29 +1,3 @@
 {
-  "sessions": [
-    {
-      "id": "1645639471:1645639471",
-      "data": {
-        "state": "enteringAmount",
-        "sendCurrency": "🇷🇺 RUB",
-        "menuReceiveCurrency": {
-          "reply_markup": {
-            "keyboard": [
-              [
-                "Получить 🇨🇳 CNY"
-              ],
-              [
-                "📲 Главное меню",
-                "🔙Назад"
-              ]
-            ],
-            "resize_keyboard": true
-          }
-        },
-        "receiveCurrency": "Получить 🇨🇳 CNY",
-        "currencyName": "🇨🇳 CNY",
-        "limitFrom": 5000,
-        "limitTo": 300000
-      }
-    }
-  ]
+  "sessions": []
 }
