@@ -894,15 +894,15 @@ ${
         // Логика переключения валюты
         ctx.session.state = "enteringReceiveAmount";
         if (ctx.session.currencyName === "🇨🇳 CNY") {
-          limitFromRecieve = 400;
+          limitFromRecieve = 700;
           limitToRecieve = 25000;
         }
         if (ctx.session.currencyName === "🇷🇺 RUB") {
-          limitFromRecieve = 5000;
+          limitFromRecieve = 10000;
           limitToRecieve = 300000;
         }
         if (ctx.session.currencyName === "🇺🇦 UAH") {
-          limitFromRecieve = 2000;
+          limitFromRecieve = 4400;
           limitToRecieve = 50000;
         }
         ctx.session.limitFromRecieve = limitFromRecieve;
