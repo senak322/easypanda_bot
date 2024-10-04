@@ -5,6 +5,6 @@ const { mainMenuBtn } = config;
 export const giveExchangeMenu = Markup.keyboard([
   ["🇷🇺 RUB"],
   ["🇨🇳 CNY"],
-  ["🇺🇦 UAH"],
+  // ["🇺🇦 UAH"],
   [mainMenuBtn],
 ]).resize();

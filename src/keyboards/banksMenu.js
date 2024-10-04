@@ -8,7 +8,7 @@
     
     // Добавляем остальные банки в зависимости от валюты отправки
     if (ctx.session.sendCurrency === "🇷🇺 RUB") {
-      keyboardLayout.push(["✅Сбер"]);
+      // keyboardLayout.push(["✅Сбер"]);
       keyboardLayout.push(banksRub);
     } else if (ctx.session.sendCurrency === "🇨🇳 CNY") {
       keyboardLayout.push(banksCny);

@@ -50,11 +50,10 @@ export const exchangeCommand = (bot) => {
     let menu;
     switch (ctx.session.sendCurrency) {
       case "🇷🇺 RUB":
-      case "🇺🇦 UAH":
         menu = receiveExchangeMenu(["Получить 🇨🇳 CNY"]); // Только CNY
         break;
       case "🇨🇳 CNY":
-        menu = receiveExchangeMenu(["Получить 🇷🇺 RUB", "Получить 🇺🇦 UAH"]); // RUB и UAH
+        menu = receiveExchangeMenu(["Получить 🇷🇺 RUB", ]); // RUB и UAH "Получить 🇺🇦 UAH"
         break;
     }
     ctx.session.menuReceiveCurrency = menu;
@@ -120,12 +119,12 @@ export const exchangeCommand = (bot) => {
 
   bot.hears(
     [
-      "✅Сбер",
-      "🟡Тинькофф",
+      "🔸СБП",
+      // "🟡Тинькофф",
       "🔶Райффайзен",
       "🔹AliPay",
-      "💬WeChat",
-      "⬛️МоноБанк",
+      // "💬WeChat",
+      // "⬛️МоноБанк",
     ],
     (ctx) => {
       if (ctx.session.state === "chooseSendBank") {
@@ -145,12 +144,13 @@ export const exchangeCommand = (bot) => {
 
   bot.hears(
     [
-      "✅Sber",
-      "🟡Tinkoff",
+      // "✅Sber",
+      "🔸Sbp",
+      // "🟡Tinkoff",
       "🔶Raiffeisen",
       "🔷AliPay",
-      "💭WeChat",
-      "◾️MonoBank",
+      // "💭WeChat",
+      // "◾️MonoBank",
     ],
     (ctx) => {
       if (ctx.session.state === "chooseRecieveBank") {
@@ -313,7 +313,7 @@ ${
 }
 ${
   ctx.session.sendBank === "🟡Тинькофф" ||
-  ctx.session.sendBank === "🔶Райффайзен"
+  ctx.session.sendBank === ""
     ? ""
     : "Ниже будут продублированы сумма к оплате и реквизиты для копирования"
 }
@@ -329,8 +329,8 @@ ${
           ]).resize()
         );
         if (
-          ctx.session.sendBank === "🟡Тинькофф" ||
-          ctx.session.sendBank === "🔶Райффайзен"
+          ctx.session.sendBank === "🟡Тинькофф" || ctx.session.sendBank === ""
+          // ctx.session.sendBank === "🔶Райффайзен"
         ) {
           await ctx.reply("Нажмите кнопку ниже для связи с администратором", {
             reply_markup: {
@@ -1198,11 +1198,19 @@ ${waitingOrder}Среднее время обработки платежа 30 м
         : 0;
 
     if (ctx.message.text === "✅Сбер") {
-      sendCard = 2202206296854099;
+      sendCard = 1;
       sendCardOwner = "Александр В.";
-    } else if (
+    } else if(ctx.message.text === "🔸СБП") {
+      sendCard = "+79779477191";
+      sendCardOwner = "Александр В. ❗️ ОЗОН Банк по СБП";
+    } else if(ctx.message.text === "🔶Райффайзен") {
+      sendCard = "+79779477191 или 2200300581942834";
+      sendCardOwner = "Александр В.";
+    }
+    
+    else if (
       ctx.message.text === "🟡Тинькофф" ||
-      ctx.message.text === "🔶Райффайзен"
+      ctx.message.text === ""
     ) {
       sendCard =
         "Для получения реквизитов отправьте #номерзаявки в чат с Администратором";
