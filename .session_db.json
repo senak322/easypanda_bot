@@ -24,13 +24,13 @@
         "limitFrom": 10000,
         "limitTo": 300000,
         "howToSend": "10000",
-        "howToRecieve": 666,
-        "sendCard": "2200300581942834 или +79779477191",
-        "sendBank": "🔶Райффайзен",
-        "sendCardOwner": "Александр В.",
+        "howToRecieve": 661,
+        "sendCard": "+79779477191",
+        "sendBank": "🔸СБП",
+        "sendCardOwner": "Александр В. ❗️ Яндекс банк по СБП",
         "recieveBank": "🔷AliPay",
-        "ownerData": "424242",
-        "ownerName": "ghjghj"
+        "ownerData": "15151",
+        "ownerName": "okokok"
       }
     }
   ]
